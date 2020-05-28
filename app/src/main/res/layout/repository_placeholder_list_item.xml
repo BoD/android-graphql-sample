@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="repository"
+            type="com.example.graphqlsample.ui.repository.adapter.simple.RepositoryUiModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?listPreferredItemHeight"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <!-- Name -->
+        <ImageView
+            android:id="@+id/imgName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/shape_loading_text_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Description 1 -->
+        <ImageView
+            android:id="@+id/imgDescription1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/shape_loading_text_body"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgName" />
+
+        <!-- Description 2 -->
+        <ImageView
+            android:id="@+id/imgDescription2"
+            android:layout_width="180sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/shape_loading_text_body"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgDescription1" />
+
+        <!-- Stars -->
+        <ImageView
+            android:id="@+id/imgStars"
+            android:layout_width="32sp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:src="@drawable/shape_loading_text_body"
+            app:layout_constraintBottom_toBottomOf="@+id/imgName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imgName" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

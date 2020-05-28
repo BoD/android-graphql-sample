@@ -1,0 +1,38 @@
+fragment searchResultOrganizationFields on Organization {
+    name
+}
+
+fragment searchResultUserFields on User {
+    name
+    bio
+}
+
+fragment searchResultRepositoryFields on Repository {
+    name
+    owner {
+        __typename
+        ...searchResultUserFields
+        ...searchResultOrganizationFields
+    }
+}
+
+query SearchQuery {
+    search(query: "foo", type: REPOSITORY, first: 100) {
+        edges {
+            cursor
+            textMatches {
+                property
+                fragment
+                highlights {
+                    beginIndice
+                    endIndice
+                    text
+                }
+            }
+            node {
+                __typename
+                ...searchResultRepositoryFields
+            }
+        }
+    }
+}

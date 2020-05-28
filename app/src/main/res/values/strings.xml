@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">GraphQL Sample</string>
+    <string name="error_generic">ERROR!</string>
+    <string name="error_withInfo">ERROR! %1$s</string>
+    <string name="success">SUCCESS!</string>
+    <string name="see_more">See more…</string>
+    <string name="repository_noDescription">(No description)</string>
+    <string name="misc_addCommentToIssue">Add a comment to an issue</string>
+    <string name="main_menu_search">Search</string>
+    <string name="main_menu_misc">Misc</string>
+    <string name="misc_handleErrorResult">Handle error result</string>
+    <string name="ownerType_orga">Org</string>
+    <string name="ownerType_user">User</string>
+</resources>

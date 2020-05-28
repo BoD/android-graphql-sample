@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="repository"
+            type="com.example.graphqlsample.ui.repository.adapter.search.SearchRepositoryUiModel" />
+
+        <import type="com.example.graphqlsample.ui.repository.adapter.search.OwnerType" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Name -->
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:includeFontPadding="false"
+                android:text="@{repository.name}"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="?android:textColorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="vtail" />
+
+            <!-- Owner name -->
+            <TextView
+                android:id="@+id/txtOwnerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:includeFontPadding="false"
+                android:text="@{repository.ownerName}"
+                android:textAppearance="?android:textAppearanceSmall"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtName"
+                tools:text="Microsoft" />
+
+            <!-- Owner type -->
+            <TextView
+                android:id="@+id/txtOwnerType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@{repository.ownerType == OwnerType.USER ? @drawable/shape_owner_type_background_user : @drawable/shape_owner_type_background_orga}"
+                android:includeFontPadding="false"
+                android:text="@{repository.ownerType == OwnerType.USER ? @string/ownerType_user : @string/ownerType_orga}"
+                android:textAllCaps="true"
+                android:textColor="#FFF"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/txtOwnerName"
+                app:layout_constraintStart_toEndOf="@+id/txtOwnerName"
+                app:layout_constraintTop_toTopOf="@+id/txtOwnerName"
+                tools:background="@drawable/shape_owner_type_background_orga"
+                tools:text="@string/ownerType_orga" />
+
+            <!-- Owner user bio -->
+            <TextView
+                android:id="@+id/txtOwnerUserBio"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:includeFontPadding="false"
+                android:text="@{repository.ownerUserBio}"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:visibility="@{repository.ownerUserBio != null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtOwnerName"
+                tools:text="Developer and creator of the famous Zlgultex library" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
