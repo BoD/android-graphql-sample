@@ -1,4 +1,4 @@
-import java.util.*
+import java.util.Properties
 
 object Versions {
     const val GRADLE = "6.4.1"
@@ -10,5 +10,5 @@ object Versions {
 }
 
 object Globals {
-    lateinit var buildProperties: Properties
+    val buildProperties = Properties()
 }

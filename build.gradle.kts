@@ -1,6 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import java.io.FileInputStream
-import java.util.*
 
 plugins {
     id("com.github.ben-manes.versions") version Versions.BEN_MANES_VERSIONS_PLUGIN
@@ -28,9 +26,8 @@ allprojects {
     }
 }
 
-// Run `./gradlew dependencyUpdates` to see latest versions of dependencies
 tasks {
-    register("clean", Delete::class) {
+    register<Delete>("clean") {
         delete(rootProject.buildDir)
     }
 
@@ -40,19 +37,12 @@ tasks {
     }
 
     // Configuration for gradle-versions-plugin
+    // Run `./gradlew dependencyUpdates` to see latest versions of dependencies
     withType<DependencyUpdatesTask> {
         resolutionStrategy {
             componentSelection {
                 all {
-                    if (setOf(
-                            "alpha",
-                            "beta",
-                            "rc",
-                            "preview",
-                            "eap",
-                            "m1"
-                        ).any { candidate.version.contains(it, true) }
-                    ) {
+                    if (setOf("alpha", "beta", "rc", "preview", "eap", "m1").any { candidate.version.contains(it, true) }) {
                         reject("Non stable")
                     }
                 }
@@ -61,21 +51,5 @@ tasks {
     }
 }
 
-// Returns a file on the project's root - creates it from a sample if it doesn't exist
-fun getOrCreateFile(fileName: String): File {
-    val res = file(fileName)
-    if (!res.exists()) {
-        logger.warn("$fileName file does not exist: creating it now - please check its values")
-        copy {
-            from("${fileName}.SAMPLE")
-            into(project.projectDir)
-            rename { fileName }
-        }
-    }
-    return res
-}
 // Build properties
-val buildProperties = Properties()
-Globals.buildProperties = buildProperties
-val buildPropertiesFile = getOrCreateFile("build.properties")
-buildProperties.load(FileInputStream(buildPropertiesFile))
+Globals.buildProperties.loadFromFile(getOrCreateFile("build.properties"))
