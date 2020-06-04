@@ -20,7 +20,7 @@ class RepositoryDataSource(
     ) {
         try {
             loadingInitial.postValue(true)
-            val userRepositoryList = runBlocking {
+            val userRepositoryList: UserRepositoryListQuery.Data = runBlocking {
                 ApolloClientManager.apolloClient
                     .suspendQuery(
                         UserRepositoryListQuery(
@@ -49,7 +49,7 @@ class RepositoryDataSource(
         callback: LoadCallback<UserRepositoryListQuery.Edge>
     ) {
         try {
-            val userRepositoryList = runBlocking {
+            val userRepositoryList: UserRepositoryListQuery.Data = runBlocking {
                 ApolloClientManager.apolloClient
                     .suspendQuery(
                         UserRepositoryListQuery(

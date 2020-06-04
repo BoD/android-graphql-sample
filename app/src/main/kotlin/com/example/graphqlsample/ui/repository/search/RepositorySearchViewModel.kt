@@ -20,7 +20,7 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
     init {
         viewModelScope.launch {
             try {
-                val searchResults = apolloClient
+                val searchResults: SearchQuery.Data = apolloClient
                     .suspendQuery(SearchQuery())
                     .data!!
 

@@ -18,7 +18,7 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
     fun addCommentToIssue() = viewModelScope.launch {
         try {
             loading.value = true
-            val returnedSubjectId = apolloClient.suspendMutate(
+            val returnedSubjectId: String? = apolloClient.suspendMutate(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_GOOD,
                     body = createCommentBody()

@@ -274,7 +274,7 @@ query ViewerRepositoryListQuery($first: Int!, $after: String) {
 }
 ```
 With no value for `first`
-Here we can see errors is returned amongst with data. The error format is standard.
+Note that it's possible to have both data and errors in the result. The error format is standard.
 
 #### Mutations
 ```graphql

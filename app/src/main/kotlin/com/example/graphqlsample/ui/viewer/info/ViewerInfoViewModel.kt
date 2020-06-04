@@ -26,7 +26,7 @@ class ViewerInfoViewModel(application: Application) : AndroidViewModel(applicati
     init {
         viewModelScope.launch {
             try {
-                val viewerInfo = apolloClient
+                val viewerInfo: ViewerInfoQuery.Data = apolloClient
                     .suspendQuery(ViewerInfoQuery())
                     .data!!
 
