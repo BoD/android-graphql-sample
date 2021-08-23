@@ -7,22 +7,20 @@ plugins {
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath("com.android.tools.build:gradle:${Versions.ANDROID_GRADLE_PLUGIN}")
         classpath(kotlin("gradle-plugin", Versions.KOTLIN))
-        classpath("com.apollographql.apollo:apollo-gradle-plugin:${Versions.APOLLO}")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.ANDROIDX_NAVIGATION}")
-        classpath("com.github.ben-manes:gradle-versions-plugin:${Versions.BEN_MANES_VERSIONS_PLUGIN}")
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

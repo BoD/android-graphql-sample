@@ -2,17 +2,17 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("com.apollographql.apollo")
+    id("com.apollographql.apollo") version Versions.APOLLO
     id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdk = 30
 
     defaultConfig {
         applicationId = "com.example.graphqlsample"
-        minSdkVersion(24)
-        targetSdkVersion(29)
+        minSdk = 24
+        targetSdk = 30
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -35,7 +35,6 @@ android {
     }
 
     compileOptions {
-        incremental = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -56,33 +55,32 @@ apollo {
 dependencies {
     // Kotlin
     implementation(kotlin("stdlib", Versions.KOTLIN))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7")
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-android", Versions.KOTLINX_COROUTINES)
 
     // AndroidX
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.core:core-ktx:1.3.0")
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-    implementation("androidx.recyclerview:recyclerview:1.1.0")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:${Versions.ANDROIDX_NAVIGATION}")
-    implementation("androidx.navigation:navigation-ui-ktx:${Versions.ANDROIDX_NAVIGATION}")
-    implementation("androidx.paging:paging-runtime-ktx:2.1.2")
+    implementation("androidx.appcompat", "appcompat", Versions.ANDROIDX_APPCOMPAT)
+    implementation("androidx.core", "core-ktx", Versions.ANDROIDX_CORE_KTX)
+    implementation("androidx.constraintlayout", "constraintlayout", Versions.ANDROIDX_CONSTRAINT_LAYOUT)
+    implementation("androidx.lifecycle", "lifecycle-extensions", Versions.ANDROIDX_LIFECYCLE)
+    implementation("androidx.lifecycle", "lifecycle-viewmodel-ktx", Versions.ANDROIDX_LIFECYCLE_VIEWMODEL)
+    implementation("androidx.recyclerview", "recyclerview", Versions.ANDROIDX_RECYCLERVIEW)
+    implementation("androidx.cardview", "cardview", Versions.ANDROIDX_CARDVIEW)
+    implementation("androidx.navigation", "navigation-fragment-ktx", Versions.ANDROIDX_NAVIGATION)
+    implementation("androidx.navigation", "navigation-ui-ktx", Versions.ANDROIDX_NAVIGATION)
+    implementation("androidx.paging", "paging-runtime-ktx", Versions.ANDROIDX_PAGING)
 
     // Material
-    implementation("com.google.android.material:material:1.1.0")
+    implementation("com.google.android.material", "material", Versions.MATERIAL)
 
     // Apollo
-    implementation("com.apollographql.apollo:apollo-runtime:${Versions.APOLLO}")
-    implementation("com.apollographql.apollo:apollo-coroutines-support:${Versions.APOLLO}")
-    compileOnly("org.jetbrains:annotations:16.0.1")
+    implementation("com.apollographql.apollo", "apollo-runtime", Versions.APOLLO)
+    implementation("com.apollographql.apollo", "apollo-coroutines-support", Versions.APOLLO)
 
     // Timber
-    implementation("com.jakewharton.timber:timber:4.7.1")
+    implementation("com.jakewharton.timber", "timber", Versions.TIMBER)
 
     // Testing
-    testImplementation("junit:junit:4.13")
-    androidTestImplementation("androidx.test.ext:junit:1.1.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
+    testImplementation("junit", "junit", Versions.JUNIT)
+    androidTestImplementation("androidx.test.ext", "junit", Versions.ANDROIDX_TEST_JUNIT)
+    androidTestImplementation("androidx.test.espresso", "espresso-core", Versions.ANDROIDX_TEST_ESPRESSO)
 }

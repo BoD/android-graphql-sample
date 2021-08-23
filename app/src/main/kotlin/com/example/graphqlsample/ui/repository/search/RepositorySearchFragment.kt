@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import com.example.graphqlsample.R
 import com.example.graphqlsample.databinding.RepositorySearchFragmentBinding
 import com.example.graphqlsample.ui.repository.adapter.search.SearchRepositoryAdapter

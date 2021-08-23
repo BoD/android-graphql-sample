@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import com.example.graphqlsample.R
 import com.example.graphqlsample.databinding.MiscFragmentBinding
 import com.google.android.material.snackbar.Snackbar
@@ -20,7 +19,7 @@ class MiscFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.misc_fragment, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
