@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.diffutil.BasicItemCallback
@@ -13,7 +13,7 @@ import com.example.graphqlsample.databinding.RepositorySimpleListItemBinding
 
 class PagedSimpleRepositoryAdapter(
     private val callbacks: SimpleRepositoryAdapterCallbacks? = null
-) : PagedListAdapter<SimpleRepositoryUiModel, PagedSimpleRepositoryAdapter.ViewHolder>(
+) : PagingDataAdapter<SimpleRepositoryUiModel, PagedSimpleRepositoryAdapter.ViewHolder>(
     BasicItemCallback()
 ) {
     companion object {

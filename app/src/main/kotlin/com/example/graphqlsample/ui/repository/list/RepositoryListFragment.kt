@@ -10,11 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import com.example.graphqlsample.R
 import com.example.graphqlsample.databinding.RepositoryListFragmentBinding
 import com.example.graphqlsample.ui.repository.adapter.simple.PagedSimpleRepositoryAdapter
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class RepositoryListFragment : Fragment() {
 
@@ -37,10 +41,10 @@ class RepositoryListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.repository_list_fragment, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         return binding.root
     }
@@ -50,16 +54,24 @@ class RepositoryListFragment : Fragment() {
         val adapter = PagedSimpleRepositoryAdapter()
         binding.rclRepositories.adapter = adapter
 
-        viewModel.repositoryList.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        lifecycleScope.launch {
+            viewModel.pagingDataflow.collectLatest { pagingData ->
+                adapter.submitData(pagingData)
+            }
         }
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                viewModel.loading.value = loadStates.refresh is LoadState.Loading
+                onError(loadStates.refresh is LoadState.Error || loadStates.append is LoadState.Error)
+            }
+        }
+    }
 
-        viewModel.isError.observe(viewLifecycleOwner) { isError ->
-            if (isError) Snackbar.make(
-                view,
-                getString(R.string.error_generic),
-                Snackbar.LENGTH_INDEFINITE
-            ).show()
-        }
+    private fun onError(isError: Boolean) {
+        if (isError) Snackbar.make(
+            binding.root,
+            getString(R.string.error_generic),
+            Snackbar.LENGTH_INDEFINITE
+        ).show()
     }
 }

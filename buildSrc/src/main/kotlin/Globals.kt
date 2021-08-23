@@ -14,7 +14,7 @@ object Versions {
     const val ANDROIDX_RECYCLERVIEW = "1.2.1"
     const val ANDROIDX_LIFECYCLE = "2.2.0"
     const val ANDROIDX_LIFECYCLE_VIEWMODEL = "2.3.1"
-    const val ANDROIDX_PAGING = "2.1.2"
+    const val ANDROIDX_PAGING = "3.0.1"
     const val ANDROIDX_TEST_JUNIT = "1.1.3"
     const val ANDROIDX_TEST_ESPRESSO = "3.4.0"
 
