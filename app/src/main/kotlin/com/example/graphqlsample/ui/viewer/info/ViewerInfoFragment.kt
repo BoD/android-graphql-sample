@@ -17,11 +17,10 @@ import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryAd
 import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryAdapterCallbacks
 import com.google.android.material.snackbar.Snackbar
 
-class ViewerInfoFragment : Fragment(),
-    SimpleRepositoryAdapterCallbacks {
+class ViewerInfoFragment : Fragment(), SimpleRepositoryAdapterCallbacks {
     private val viewModel by viewModels<ViewerInfoViewModel>()
     private lateinit var binding: ViewerInfoFragmentBinding
-    private lateinit var adapter: SimpleRepositoryAdapter
+    private val adapter = SimpleRepositoryAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,27 +35,33 @@ class ViewerInfoFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = SimpleRepositoryAdapter(this)
         binding.rclRepositories.adapter = adapter
-        viewModel.repositoryList.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-
-        viewModel.isError.observe(viewLifecycleOwner) { isError ->
-            if (isError) Snackbar.make(
-                view,
-                getString(R.string.error_generic),
-                Snackbar.LENGTH_INDEFINITE
-            ).show()
+        viewModel.uiModel.observe(viewLifecycleOwner) { uiModel ->
+            when (uiModel) {
+                ViewerInfoViewModel.ViewerInfoUiModel.Loading -> binding.isLoading = true
+                ViewerInfoViewModel.ViewerInfoUiModel.Error -> {
+                    binding.isLoading = false
+                    showError()
+                }
+                is ViewerInfoViewModel.ViewerInfoUiModel.Loaded -> {
+                    binding.isLoading = false
+                    binding.uiModel = uiModel
+                    adapter.submitList(uiModel.repositoryList)
+                }
+            }
         }
 
         setHasOptionsMenu(true)
     }
 
+    private fun showError() {
+        Snackbar.make(binding.root, getString(R.string.error_generic), Snackbar.LENGTH_INDEFINITE).show()
+    }
+
     override fun onSeeMoreClicked() {
         findNavController().navigate(
             ViewerInfoFragmentDirections.actionViewerInfoFragmentToRepositoryListFragment(
-                viewModel.login.value!!
+                (viewModel.uiModel.value as ViewerInfoViewModel.ViewerInfoUiModel.Loaded).login
             )
         )
     }

@@ -15,13 +15,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ViewerInfoViewModel(application: Application) : AndroidViewModel(application) {
-    val loading = MutableLiveData(true)
-    val isError = MutableLiveData<Boolean>()
 
-    val login = MutableLiveData<String>()
-    val name = MutableLiveData<String>()
-    val email = MutableLiveData<String>()
-    val repositoryList = MutableLiveData<List<RepositoryUiModel>>()
+    val uiModel: MutableLiveData<ViewerInfoUiModel> = MutableLiveData(ViewerInfoUiModel.Loading)
 
     init {
         viewModelScope.launch {
@@ -29,10 +24,6 @@ class ViewerInfoViewModel(application: Application) : AndroidViewModel(applicati
                 val viewerInfo: ViewerInfoQuery.Data = apolloClient
                     .suspendQuery(ViewerInfoQuery())
                     .data!!
-
-                login.value = viewerInfo.viewer.login
-                name.value = viewerInfo.viewer.name
-                email.value = viewerInfo.viewer.email
 
                 val repositoryUiModelList = mutableListOf<RepositoryUiModel>()
                 repositoryUiModelList += viewerInfo.viewer.repositories.nodes!!.map { note ->
@@ -47,14 +38,27 @@ class ViewerInfoViewModel(application: Application) : AndroidViewModel(applicati
                     repositoryUiModelList += SeeMoreRepositoryUiModel
                 }
 
-                repositoryList.value = repositoryUiModelList
-                isError.value = false
+                uiModel.value = ViewerInfoUiModel.Loaded(
+                    login = viewerInfo.viewer.login,
+                    name = viewerInfo.viewer.name,
+                    email = viewerInfo.viewer.email,
+                    repositoryList = repositoryUiModelList,
+                )
             } catch (e: Exception) {
                 Timber.w(e, "Could not fetch user info")
-                isError.value = true
-            } finally {
-                loading.value = false
+                uiModel.value = ViewerInfoUiModel.Error
             }
         }
+    }
+
+    sealed interface ViewerInfoUiModel {
+        object Loading : ViewerInfoUiModel
+        object Error : ViewerInfoUiModel
+        data class Loaded(
+            val login: String,
+            val name: String?,
+            val email: String,
+            val repositoryList: List<RepositoryUiModel>
+        ) : ViewerInfoUiModel
     }
 }
