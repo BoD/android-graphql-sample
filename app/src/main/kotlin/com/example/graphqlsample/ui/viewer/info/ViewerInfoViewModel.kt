@@ -2,7 +2,6 @@ package com.example.graphqlsample.ui.viewer.info
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.R
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
@@ -11,12 +10,13 @@ import com.example.graphqlsample.queries.ViewerInfoQuery
 import com.example.graphqlsample.ui.repository.adapter.simple.RepositoryUiModel
 import com.example.graphqlsample.ui.repository.adapter.simple.SeeMoreRepositoryUiModel
 import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryUiModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ViewerInfoViewModel(application: Application) : AndroidViewModel(application) {
 
-    val uiModel: MutableLiveData<ViewerInfoUiModel> = MutableLiveData(ViewerInfoUiModel.Loading)
+    val uiModel: MutableStateFlow<ViewerInfoUiModel> = MutableStateFlow(ViewerInfoUiModel.Loading)
 
     init {
         viewModelScope.launch {

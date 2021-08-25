@@ -14,13 +14,16 @@ object Versions {
     const val ANDROIDX_RECYCLERVIEW = "1.2.1"
     const val ANDROIDX_LIFECYCLE = "2.2.0"
     const val ANDROIDX_LIFECYCLE_VIEWMODEL = "2.3.1"
+    const val ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE = "1.0.0-alpha07"
     const val ANDROIDX_PAGING = "3.0.1"
     const val ANDROIDX_TEST_JUNIT = "1.1.3"
     const val ANDROIDX_TEST_ESPRESSO = "3.4.0"
+    const val ANDROIDX_ACTIVITY_COMPOSE = "1.3.1"
 
     const val MATERIAL = "1.4.0"
     const val TIMBER = "5.0.1"
     const val JUNIT = "4.13.2"
+    const val COMPOSE = "1.0.1"
 
     const val BEN_MANES_VERSIONS_PLUGIN = "0.39.0"
     const val ANDROID_GRADLE_PLUGIN = "7.0.1"

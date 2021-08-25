@@ -32,6 +32,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        compose = true
     }
 
     compileOptions {
@@ -45,6 +46,10 @@ android {
 
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.1"
     }
 }
 
@@ -71,6 +76,13 @@ dependencies {
 
     // Material
     implementation("com.google.android.material", "material", Versions.MATERIAL)
+
+    // Compose
+    implementation("androidx.activity", "activity-compose", Versions.ANDROIDX_ACTIVITY_COMPOSE)
+    implementation("androidx.compose.material", "material", Versions.COMPOSE)
+    implementation("androidx.compose.animation", "animation", Versions.COMPOSE)
+    implementation("androidx.compose.ui", "ui-tooling", Versions.COMPOSE)
+    implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", Versions.ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE)
 
     // Apollo
     implementation("com.apollographql.apollo", "apollo-runtime", Versions.APOLLO)
