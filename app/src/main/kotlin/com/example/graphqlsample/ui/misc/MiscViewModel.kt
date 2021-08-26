@@ -2,22 +2,23 @@ package com.example.graphqlsample.ui.misc
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
 import com.example.graphqlsample.core.apollo.suspendMutate
 import com.example.graphqlsample.queries.AddCommentToIssueMutation
+import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.Date
 
 class MiscViewModel(application: Application) : AndroidViewModel(application) {
-    val loading = MutableLiveData<Boolean>()
-    val status = MutableLiveData<Status>()
+
+    val uiModel: MutableStateFlow<MiscUiModel> = MutableStateFlow(MiscUiModel(isLoading = false, status = Status.Idle))
 
     fun addCommentToIssue() = viewModelScope.launch {
         try {
-            loading.value = true
+            uiModel.value = uiModel.value.copy(isLoading = true)
             val returnedSubjectId: String? = apolloClient.suspendMutate(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_GOOD,
@@ -27,18 +28,16 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
                 .data?.addComment?.subject?.id
 
             Timber.i("returnedSubjectId=$returnedSubjectId")
-            status.value = Status.Success
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Success)
         } catch (e: Exception) {
             Timber.w(e, "Could not add comment to issue")
-            status.value = Status.Error(e.message!!)
-        } finally {
-            loading.value = false
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(e.message!!))
         }
     }
 
     fun handleErrorResult() = viewModelScope.launch {
         try {
-            loading.value = true
+            uiModel.value = uiModel.value.copy(isLoading = true)
             val errors = apolloClient.suspendMutate(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_BAD,
@@ -46,18 +45,26 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
                 )
             ).errors!!
             Timber.i("errors=$errors")
-            status.value =
-                Status.Error("${errors.first().customAttributes["type"]} ${errors.first().message}")
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error("${errors.first().customAttributes["type"]} ${errors.first().message}"))
         } catch (e: Exception) {
             Timber.w(e, "Could not add comment to issue")
-            status.value = Status.Error(e.message!!)
-        } finally {
-            loading.value = false
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(e.message!!))
         }
     }
 
     private fun createCommentBody(): String {
         return "Hello, World!  This test comment was created on ${Date()}.  Have a nice day."
+    }
+
+    data class MiscUiModel(
+        val isLoading: Boolean,
+        val status: Status,
+    ) {
+        sealed interface Status {
+            object Idle : Status
+            object Success : Status
+            data class Error(val message: String) : Status
+        }
     }
 
     companion object {
@@ -67,9 +74,8 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
         // Id of a non existing issue (test error handling)
         private const val ISSUE_ID_BAD = "XXX"
     }
+
 }
 
-sealed class Status {
-    object Success : Status()
-    data class Error(val message: String) : Status()
-}
+
+
