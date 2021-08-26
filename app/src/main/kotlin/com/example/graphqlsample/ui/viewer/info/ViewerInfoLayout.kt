@@ -2,7 +2,6 @@ package com.example.graphqlsample.ui.viewer.info
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
@@ -26,24 +21,23 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.graphqlsample.R
-import com.example.graphqlsample.ui.repository.adapter.simple.RepositoryUiModel
-import com.example.graphqlsample.ui.repository.adapter.simple.SeeMoreRepositoryUiModel
-import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryUiModel
+import com.example.graphqlsample.core.ui.FullScreenLoading
+import com.example.graphqlsample.ui.repository.item.RepositoryItem
+import com.example.graphqlsample.ui.repository.item.RepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SimpleRepositoryUiModel
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Error
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loaded
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loading
-
 
 @Composable
 fun ViewerInfoLayout(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
@@ -58,19 +52,12 @@ fun ViewerInfoLayout(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
         Scaffold(scaffoldState = scaffoldState) {
             Crossfade(uiModel is Loading) { isLoading ->
                 if (isLoading) {
-                    Loading()
+                    FullScreenLoading()
                 } else if (uiModel is Loaded) {
                     Loaded(uiModel, onSeeMoreClick)
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun Loading() {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
-        CircularProgressIndicator()
     }
 }
 
@@ -104,6 +91,7 @@ fun UserInfo(uiModel: Loaded) {
 @Composable
 fun RepositoryList(repositoryList: List<RepositoryUiModel>, onSeeMoreClick: () -> Unit) {
     LazyColumn(Modifier.fillMaxSize()) {
+        item { Spacer(Modifier.height(8.dp)) }
         items(repositoryList) { repository ->
             when (repository) {
                 is SimpleRepositoryUiModel -> RepositoryItem(repository)
@@ -112,25 +100,6 @@ fun RepositoryList(repositoryList: List<RepositoryUiModel>, onSeeMoreClick: () -
         }
         item { Spacer(Modifier.height(8.dp)) }
     }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun RepositoryItem(repository: SimpleRepositoryUiModel) {
-    ListItem(
-        text = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(modifier = Modifier.weight(1F), text = repository.name)
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = repository.stars, style = typography.body2)
-                    Icon(painter = painterResource(R.drawable.ic_star_black_16dp), contentDescription = null)
-                }
-            }
-        },
-        secondaryText = {
-            Text(repository.description)
-        }
-    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)

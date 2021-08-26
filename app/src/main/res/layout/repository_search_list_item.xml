@@ -7,9 +7,9 @@
 
         <variable
             name="repository"
-            type="com.example.graphqlsample.ui.repository.adapter.search.SearchRepositoryUiModel" />
+            type="com.example.graphqlsample.ui.repository.search.SearchRepositoryUiModel" />
 
-        <import type="com.example.graphqlsample.ui.repository.adapter.search.OwnerType" />
+        <import type="com.example.graphqlsample.ui.repository.search.OwnerType" />
 
         <import type="android.view.View" />
 

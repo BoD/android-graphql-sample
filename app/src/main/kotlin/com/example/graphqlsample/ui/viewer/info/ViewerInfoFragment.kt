@@ -14,9 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.graphqlsample.R
-import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryAdapterCallbacks
 
-class ViewerInfoFragment : Fragment(), SimpleRepositoryAdapterCallbacks {
+class ViewerInfoFragment : Fragment() {
     private val viewModel by viewModels<ViewerInfoViewModel>()
 
     override fun onCreateView(
@@ -33,7 +32,7 @@ class ViewerInfoFragment : Fragment(), SimpleRepositoryAdapterCallbacks {
         }
     }
 
-    override fun onSeeMoreClicked() {
+    private fun onSeeMoreClicked() {
         findNavController().navigate(
             ViewerInfoFragmentDirections.actionViewerInfoFragmentToRepositoryListFragment(
                 (viewModel.uiModel.value as ViewerInfoViewModel.ViewerInfoUiModel.Loaded).login

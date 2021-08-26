@@ -7,9 +7,9 @@ import com.example.graphqlsample.R
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
 import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.ViewerInfoQuery
-import com.example.graphqlsample.ui.repository.adapter.simple.RepositoryUiModel
-import com.example.graphqlsample.ui.repository.adapter.simple.SeeMoreRepositoryUiModel
-import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.RepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SimpleRepositoryUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber

@@ -16,6 +16,7 @@ object Versions {
     const val ANDROIDX_LIFECYCLE_VIEWMODEL = "2.3.1"
     const val ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE = "1.0.0-alpha07"
     const val ANDROIDX_PAGING = "3.0.1"
+    const val ANDROIDX_PAGING_COMPOSE = "1.0.0-alpha12"
     const val ANDROIDX_TEST_JUNIT = "1.1.3"
     const val ANDROIDX_TEST_ESPRESSO = "3.4.0"
     const val ANDROIDX_ACTIVITY_COMPOSE = "1.3.1"

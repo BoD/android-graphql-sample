@@ -1,4 +1,4 @@
-package com.example.graphqlsample.ui.repository.adapter.search
+package com.example.graphqlsample.ui.repository.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,8 +9,8 @@ import com.example.graphqlsample.R
 import com.example.graphqlsample.core.diffutil.BasicItemCallback
 import com.example.graphqlsample.databinding.RepositorySearchListItemBinding
 
-class SearchRepositoryAdapter :
-    ListAdapter<SearchRepositoryUiModel, SearchRepositoryAdapter.ViewHolder>(BasicItemCallback()) {
+class RepositorySearchAdapter :
+    ListAdapter<SearchRepositoryUiModel, RepositorySearchAdapter.ViewHolder>(BasicItemCallback()) {
     class ViewHolder(val binding: RepositorySearchListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 

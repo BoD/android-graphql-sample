@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.graphqlsample.R
 import com.example.graphqlsample.databinding.RepositorySearchFragmentBinding
-import com.example.graphqlsample.ui.repository.adapter.search.SearchRepositoryAdapter
 import com.google.android.material.snackbar.Snackbar
 
 class RepositorySearchFragment : Fragment() {
@@ -31,7 +30,7 @@ class RepositorySearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = SearchRepositoryAdapter()
+        val adapter = RepositorySearchAdapter()
         binding.rclRepositories.adapter = adapter
 
         viewModel.repositoryList.observe(viewLifecycleOwner) {

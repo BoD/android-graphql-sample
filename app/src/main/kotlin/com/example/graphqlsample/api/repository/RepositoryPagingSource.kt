@@ -11,10 +11,13 @@ import timber.log.Timber
 class RepositoryPagingSource(
     private val userLogin: String,
 ) : PagingSource<String, UserRepositoryListQuery.Edge>() {
+    private var loadedItems = 0
 
     override fun getRefreshKey(state: PagingState<String, UserRepositoryListQuery.Edge>): String? = null
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, UserRepositoryListQuery.Edge> {
+        if (params is LoadParams.Refresh) loadedItems = 0
+
         try {
             val userRepositoryList: UserRepositoryListQuery.Data =
                 ApolloClientManager.apolloClient
@@ -27,10 +30,13 @@ class RepositoryPagingSource(
                     )
                     .data!!
 
+            val data = userRepositoryList.user!!.repositories.edges!! as List<UserRepositoryListQuery.Edge>
+            loadedItems += data.size
             return LoadResult.Page(
-                data = userRepositoryList.user!!.repositories.edges!! as List<UserRepositoryListQuery.Edge>,
+                data = data,
                 prevKey = null,
-                nextKey = userRepositoryList.user.repositories.edges!!.lastOrNull()?.cursor
+                nextKey = data.lastOrNull()?.cursor,
+                itemsAfter = userRepositoryList.user.repositories.totalCount - loadedItems,
             )
         } catch (e: Exception) {
             Timber.w(e, "Could not fetch user repository list")

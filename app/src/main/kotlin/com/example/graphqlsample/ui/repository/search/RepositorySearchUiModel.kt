@@ -1,4 +1,4 @@
-package com.example.graphqlsample.ui.repository.adapter.search
+package com.example.graphqlsample.ui.repository.search
 
 data class SearchRepositoryUiModel(
     val name: String,

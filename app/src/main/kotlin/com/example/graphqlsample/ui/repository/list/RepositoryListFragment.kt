@@ -5,22 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.paging.LoadState
-import com.example.graphqlsample.R
-import com.example.graphqlsample.databinding.RepositoryListFragmentBinding
-import com.example.graphqlsample.ui.repository.adapter.simple.PagedSimpleRepositoryAdapter
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class RepositoryListFragment : Fragment() {
+
+    private val args: RepositoryListFragmentArgs by navArgs()
 
     private val viewModel by viewModels<RepositoryListViewModel>() {
         object : ViewModelProvider.Factory {
@@ -33,45 +27,16 @@ class RepositoryListFragment : Fragment() {
             }
         }
     }
-    private lateinit var binding: RepositoryListFragmentBinding
-
-    private val args: RepositoryListFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.repository_list_fragment, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val adapter = PagedSimpleRepositoryAdapter()
-        binding.rclRepositories.adapter = adapter
-
-        lifecycleScope.launch {
-            viewModel.pagingDataflow.collectLatest { pagingData ->
-                adapter.submitData(pagingData)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                RepositoryListLayout(viewModel.pagingDataflow)
             }
         }
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { loadStates ->
-                viewModel.loading.value = loadStates.refresh is LoadState.Loading
-                onError(loadStates.refresh is LoadState.Error || loadStates.append is LoadState.Error)
-            }
-        }
-    }
-
-    private fun onError(isError: Boolean) {
-        if (isError) Snackbar.make(
-            binding.root,
-            getString(R.string.error_generic),
-            Snackbar.LENGTH_INDEFINITE
-        ).show()
     }
 }

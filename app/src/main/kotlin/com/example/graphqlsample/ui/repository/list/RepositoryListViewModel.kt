@@ -11,7 +11,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.graphqlsample.R
 import com.example.graphqlsample.api.repository.RepositoryPagingSource
-import com.example.graphqlsample.ui.repository.adapter.simple.SimpleRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SimpleRepositoryUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 

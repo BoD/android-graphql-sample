@@ -83,6 +83,8 @@ dependencies {
     implementation("androidx.compose.animation", "animation", Versions.COMPOSE)
     implementation("androidx.compose.ui", "ui-tooling", Versions.COMPOSE)
     implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", Versions.ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE)
+    implementation("androidx.paging", "paging-compose", Versions.ANDROIDX_PAGING_COMPOSE)
+
 
     // Apollo
     implementation("com.apollographql.apollo", "apollo-runtime", Versions.APOLLO)

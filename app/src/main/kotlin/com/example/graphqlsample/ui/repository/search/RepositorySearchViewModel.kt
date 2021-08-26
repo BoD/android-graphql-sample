@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
 import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.SearchQuery
-import com.example.graphqlsample.ui.repository.adapter.search.OwnerType
-import com.example.graphqlsample.ui.repository.adapter.search.SearchRepositoryUiModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
