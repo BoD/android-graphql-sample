@@ -11,7 +11,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.graphqlsample.R
 import com.example.graphqlsample.api.repository.RepositoryPagingSource
-import com.example.graphqlsample.ui.repository.item.SimpleRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -20,12 +20,12 @@ class RepositoryListViewModel(application: Application, userLogin: String) :
 
     val loading = MutableLiveData<Boolean>()
 
-    val pagingDataflow: Flow<PagingData<SimpleRepositoryUiModel>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+    val pagingDataflow: Flow<PagingData<SimpleRepositoryItemUiModel>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
         RepositoryPagingSource(userLogin = userLogin)
     }.flow
         .mapLatest { data ->
             data.map { item ->
-                SimpleRepositoryUiModel(
+                SimpleRepositoryItemUiModel(
                     name = item.node!!.fragments.repositoryFields.name,
                     description = item.node.fragments.repositoryFields.description
                         ?: getApplication<Application>().getString(R.string.repository_noDescription),

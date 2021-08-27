@@ -3,6 +3,7 @@ package com.example.graphqlsample.ui.viewer.info
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
-import com.example.graphqlsample.ui.repository.item.RepositoryUiModel
-import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryUiModel
-import com.example.graphqlsample.ui.repository.item.SimpleRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
+import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
+import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Error
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loaded
@@ -65,12 +66,12 @@ fun ViewerInfoLayout(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
 private fun Loaded(uiModel: Loaded, onSeeMoreClick: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         UserInfo(uiModel)
-        RepositoryList(uiModel.repositoryList, onSeeMoreClick)
+        RepositoryList(uiModel.repositoryItemList, onSeeMoreClick)
     }
 }
 
 @Composable
-fun UserInfo(uiModel: Loaded) {
+private fun UserInfo(uiModel: Loaded) {
     Card(Modifier.fillMaxWidth(), elevation = 4.dp) {
         Row(
             Modifier
@@ -89,16 +90,14 @@ fun UserInfo(uiModel: Loaded) {
 }
 
 @Composable
-fun RepositoryList(repositoryList: List<RepositoryUiModel>, onSeeMoreClick: () -> Unit) {
-    LazyColumn(Modifier.fillMaxSize()) {
-        item { Spacer(Modifier.height(8.dp)) }
-        items(repositoryList) { repository ->
+private fun RepositoryList(repositoryItemList: List<RepositoryItemUiModel>, onSeeMoreClick: () -> Unit) {
+    LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
+        items(repositoryItemList) { repository ->
             when (repository) {
-                is SimpleRepositoryUiModel -> RepositoryItem(repository)
-                SeeMoreRepositoryUiModel -> MoreItem(onSeeMoreClick)
+                is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
+                SeeMoreRepositoryItemUiModel -> MoreItem(onSeeMoreClick)
             }
         }
-        item { Spacer(Modifier.height(8.dp)) }
     }
 }
 
@@ -116,13 +115,13 @@ private fun MoreItem(onClick: () -> Unit) {
 
 @Preview
 @Composable
-fun LoadedViewerInfoLayoutPreview() {
+private fun LoadedViewerInfoLayoutPreview() {
     ViewerInfoLayout(
         Loaded(
             "JohnDoe42", "John Doe", "john.doe@example.com", listOf(
-                SimpleRepositoryUiModel("The first repository", "This repository is very interesting!", "4"),
-                SimpleRepositoryUiModel("The second repository", "I will not buy this record, it is scratched", "1"),
-                SeeMoreRepositoryUiModel,
+                SimpleRepositoryItemUiModel("The first repository", "This repository is very interesting!", "4"),
+                SimpleRepositoryItemUiModel("The second repository", "I will not buy this record, it is scratched", "1"),
+                SeeMoreRepositoryItemUiModel,
             )
         )
     ) {}
@@ -130,6 +129,6 @@ fun LoadedViewerInfoLayoutPreview() {
 
 @Preview
 @Composable
-fun ErrorViewerInfoLayoutPreview() {
+private fun ErrorViewerInfoLayoutPreview() {
     ViewerInfoLayout(Error) {}
 }

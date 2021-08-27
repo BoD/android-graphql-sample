@@ -9,6 +9,6 @@
     <string name="main_menu_search">Search</string>
     <string name="main_menu_misc">Misc</string>
     <string name="misc_handleErrorResult">Handle error result</string>
-    <string name="ownerType_orga">Org</string>
-    <string name="ownerType_user">User</string>
+    <string name="ownerType_orga">ORG</string>
+    <string name="ownerType_user">USER</string>
 </resources>

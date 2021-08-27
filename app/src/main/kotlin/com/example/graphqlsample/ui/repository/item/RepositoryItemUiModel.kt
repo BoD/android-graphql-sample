@@ -1,11 +1,11 @@
 package com.example.graphqlsample.ui.repository.item
 
-sealed interface RepositoryUiModel
+sealed interface RepositoryItemUiModel
 
-data class SimpleRepositoryUiModel(
+data class SimpleRepositoryItemUiModel(
     val name: String,
     val description: String,
-    val stars: String
-) : RepositoryUiModel
+    val stars: String,
+) : RepositoryItemUiModel
 
-object SeeMoreRepositoryUiModel : RepositoryUiModel
+object SeeMoreRepositoryItemUiModel : RepositoryItemUiModel

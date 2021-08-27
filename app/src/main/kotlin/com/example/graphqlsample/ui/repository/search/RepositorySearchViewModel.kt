@@ -2,18 +2,17 @@ package com.example.graphqlsample.ui.repository.search
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
 import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.SearchQuery
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
-    val loading = MutableLiveData(true)
-    val isError = MutableLiveData<Boolean>()
-    val repositoryList = MutableLiveData<List<SearchRepositoryUiModel>>()
+
+    val uiModel: MutableStateFlow<RepositorySearchUiModel> = MutableStateFlow(RepositorySearchUiModel.Loading)
 
     init {
         viewModelScope.launch {
@@ -22,35 +21,50 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                     .suspendQuery(SearchQuery())
                     .data!!
 
-                repositoryList.value = searchResults.search.edges!!.map { edge ->
+                uiModel.value = RepositorySearchUiModel.Loaded(searchResults.search.edges!!.map { edge ->
                     val searchResultRepositoryFields =
                         edge!!.node!!.fragments.searchResultRepositoryFields!!
                     val owner = searchResultRepositoryFields.owner
                     val ownerType =
-                        if (owner.fragments.searchResultOrganizationFields != null) OwnerType.ORGANIZATION else OwnerType.USER
-                    SearchRepositoryUiModel(
+                        if (owner.fragments.searchResultOrganizationFields != null) RepositorySearchItemUiModel.OwnerType.ORGANIZATION else RepositorySearchItemUiModel.OwnerType.USER
+                    RepositorySearchItemUiModel(
                         name = searchResultRepositoryFields.name,
                         ownerType = ownerType,
                         ownerName = when (ownerType) {
-                            OwnerType.USER -> owner.fragments.searchResultUserFields!!.name
+                            RepositorySearchItemUiModel.OwnerType.USER -> owner.fragments.searchResultUserFields!!.name
                                 ?: "(no name)"
-                            OwnerType.ORGANIZATION -> owner.fragments.searchResultOrganizationFields!!.name!!
+                            RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.fragments.searchResultOrganizationFields!!.name!!
                         },
                         ownerUserBio = when (ownerType) {
-                            OwnerType.USER -> owner.fragments.searchResultUserFields!!.bio?.trim().takeIf { !it.isNullOrBlank() }
-                            OwnerType.ORGANIZATION -> null
+                            RepositorySearchItemUiModel.OwnerType.USER -> owner.fragments.searchResultUserFields!!.bio?.trim().takeIf { !it.isNullOrBlank() }
+                            RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> null
                         }
                     )
                 }
-                isError.value = false
+                )
             } catch (e: Exception) {
                 Timber.w(e, "Could not fetch search results")
-                isError.value = true
-            } finally {
-                loading.value = false
+                uiModel.value = RepositorySearchUiModel.Error
             }
         }
+    }
 
+    sealed interface RepositorySearchUiModel {
+        object Loading : RepositorySearchUiModel
+        object Error : RepositorySearchUiModel
+        data class Loaded(
+            val repositorySearchItemList: List<RepositorySearchItemUiModel>,
+        ) : RepositorySearchUiModel
+    }
 
+    data class RepositorySearchItemUiModel(
+        val name: String,
+        val ownerType: OwnerType,
+        val ownerName: String,
+        val ownerUserBio: String?,
+    ) {
+        enum class OwnerType {
+            USER, ORGANIZATION
+        }
     }
 }

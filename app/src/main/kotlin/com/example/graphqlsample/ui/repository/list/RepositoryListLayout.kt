@@ -5,9 +5,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,13 +33,13 @@ import androidx.paging.compose.items
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
-import com.example.graphqlsample.ui.repository.item.SimpleRepositoryUiModel
+import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RepositoryListLayout(repositoryList: Flow<PagingData<SimpleRepositoryUiModel>>) {
+fun RepositoryListLayout(repositoryList: Flow<PagingData<SimpleRepositoryItemUiModel>>) {
     MaterialTheme {
-        val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryUiModel> = repositoryList.collectAsLazyPagingItems()
+        val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> = repositoryList.collectAsLazyPagingItems()
         val state = lazyRepositoryItems.loadState
         val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
 
@@ -63,16 +63,14 @@ fun RepositoryListLayout(repositoryList: Flow<PagingData<SimpleRepositoryUiModel
 }
 
 @Composable
-private fun Loaded(lazyRepositoryItems: LazyPagingItems<SimpleRepositoryUiModel>) {
-    LazyColumn(Modifier.fillMaxSize()) {
-        item { Spacer(Modifier.height(8.dp)) }
+private fun Loaded(lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel>) {
+    LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
         items(lazyRepositoryItems) { repository ->
             when (repository) {
-                is SimpleRepositoryUiModel -> RepositoryItem(repository)
+                is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
                 null -> PlaceholderRepositoryItem()
             }
         }
-        item { Spacer(Modifier.height(8.dp)) }
     }
 }
 
@@ -110,6 +108,6 @@ private fun Shim(modifier: Modifier) {
 
 @Preview
 @Composable
-fun EmptyRepositoryItemPreview() {
+private fun EmptyRepositoryItemPreview() {
     PlaceholderRepositoryItem()
 }

@@ -17,7 +17,7 @@ import com.example.graphqlsample.R
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RepositoryItem(repository: SimpleRepositoryUiModel) {
+fun RepositoryItem(repository: SimpleRepositoryItemUiModel) {
     ListItem(
         text = {
             Row(verticalAlignment = Alignment.CenterVertically) {

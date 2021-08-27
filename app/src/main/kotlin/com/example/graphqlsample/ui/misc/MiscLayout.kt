@@ -71,6 +71,6 @@ fun MiscLayout(uiModel: MiscViewModel.MiscUiModel, addCommentToIssue: () -> Unit
 // Previews
 @Preview
 @Composable
-fun MiscLayoutPreview() {
+private fun MiscLayoutPreview() {
     MiscLayout(uiModel = MiscViewModel.MiscUiModel(isLoading = false, status = MiscViewModel.MiscUiModel.Status.Idle), {}, {})
 }
