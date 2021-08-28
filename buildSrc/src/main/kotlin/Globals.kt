@@ -20,6 +20,7 @@ object Versions {
     const val ANDROIDX_TEST_JUNIT = "1.1.3"
     const val ANDROIDX_TEST_ESPRESSO = "3.4.0"
     const val ANDROIDX_ACTIVITY_COMPOSE = "1.3.1"
+    const val ANDROIDX_NAVIGATION_COMPOSE = "2.4.0-alpha07"
 
     const val MATERIAL = "1.4.0"
     const val TIMBER = "5.0.1"

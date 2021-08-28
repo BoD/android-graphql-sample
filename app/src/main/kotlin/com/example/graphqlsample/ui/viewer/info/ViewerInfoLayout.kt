@@ -23,14 +23,19 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
+import com.example.graphqlsample.ui.main.Destinations
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
@@ -41,7 +46,20 @@ import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUi
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loading
 
 @Composable
-fun ViewerInfoLayout(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
+fun ViewerInfoLayout(onSeeMoreClick: (String) -> Unit) {
+    val viewModel: ViewerInfoViewModel = viewModel()
+    val uiModel by viewModel.uiModel.collectAsState()
+    ViewerInfoLayoutContent(
+        uiModel = uiModel,
+        onSeeMoreClick = {
+            val login = (uiModel as Loaded).login
+            onSeeMoreClick(login)
+        }
+    )
+}
+
+@Composable
+private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
     MaterialTheme {
         val scaffoldState = rememberScaffoldState()
         if (uiModel is Error) {
@@ -116,7 +134,7 @@ private fun MoreItem(onClick: () -> Unit) {
 @Preview
 @Composable
 private fun LoadedViewerInfoLayoutPreview() {
-    ViewerInfoLayout(
+    ViewerInfoLayoutContent(
         Loaded(
             "JohnDoe42", "John Doe", "john.doe@example.com", listOf(
                 SimpleRepositoryItemUiModel("The first repository", "This repository is very interesting!", "4"),
@@ -130,5 +148,5 @@ private fun LoadedViewerInfoLayoutPreview() {
 @Preview
 @Composable
 private fun ErrorViewerInfoLayoutPreview() {
-    ViewerInfoLayout(Error) {}
+    ViewerInfoLayoutContent(Error) {}
 }

@@ -15,16 +15,30 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 
 @Composable
-fun MiscLayout(uiModel: MiscViewModel.MiscUiModel, addCommentToIssue: () -> Unit, handleErrorResult: () -> Unit) {
+fun MiscLayout() {
+    val viewModel: MiscViewModel = viewModel()
+    val uiModel by viewModel.uiModel.collectAsState()
+    MiscLayoutContent(uiModel, viewModel::addCommentToIssue, viewModel::handleErrorResult)
+}
+
+@Composable
+private fun MiscLayoutContent(
+    uiModel: MiscViewModel.MiscUiModel,
+    addCommentToIssue: () -> Unit,
+    handleErrorResult: () -> Unit,
+) {
     MaterialTheme {
         val scaffoldState = rememberScaffoldState()
         when (uiModel.status) {
@@ -69,8 +83,9 @@ fun MiscLayout(uiModel: MiscViewModel.MiscUiModel, addCommentToIssue: () -> Unit
 
 
 // Previews
+
 @Preview
 @Composable
-private fun MiscLayoutPreview() {
-    MiscLayout(uiModel = MiscViewModel.MiscUiModel(isLoading = false, status = MiscViewModel.MiscUiModel.Status.Idle), {}, {})
+private fun MiscLayoutContentPreview() {
+    MiscLayoutContent(uiModel = MiscViewModel.MiscUiModel(isLoading = false, status = MiscViewModel.MiscUiModel.Status.Idle), {}, {})
 }

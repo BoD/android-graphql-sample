@@ -25,6 +25,8 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchItemUiModel
@@ -43,7 +46,14 @@ import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchUiModel
 
 @Composable
-fun RepositorySearchLayout(uiModel: RepositorySearchUiModel) {
+fun RepositorySearchLayout() {
+    val viewModel: RepositorySearchViewModel = viewModel()
+    val uiModel by viewModel.uiModel.collectAsState()
+    RepositorySearchLayoutContent(uiModel)
+}
+
+@Composable
+private fun RepositorySearchLayoutContent(uiModel: RepositorySearchUiModel) {
     MaterialTheme {
         val scaffoldState = rememberScaffoldState()
         if (uiModel is RepositorySearchUiModel.Error) {
@@ -133,7 +143,7 @@ private fun UserOrOrga(ownerType: OwnerType) {
 @Preview
 @Composable
 private fun RepositorySearchLayoutPreview() {
-    RepositorySearchLayout(uiModel = RepositorySearchUiModel.Loaded(listOf(
+    RepositorySearchLayoutContent(uiModel = RepositorySearchUiModel.Loaded(listOf(
         RepositorySearchItemUiModel(
             name = "The First Project",
             ownerType = OwnerType.USER,

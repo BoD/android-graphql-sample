@@ -3,16 +3,15 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("com.apollographql.apollo") version Versions.APOLLO
-    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         applicationId = "com.example.graphqlsample"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -31,7 +30,6 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
         compose = true
     }
 
@@ -84,7 +82,7 @@ dependencies {
     implementation("androidx.compose.ui", "ui-tooling", Versions.COMPOSE)
     implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", Versions.ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE)
     implementation("androidx.paging", "paging-compose", Versions.ANDROIDX_PAGING_COMPOSE)
-
+    implementation("androidx.navigation", "navigation-compose", Versions.ANDROIDX_NAVIGATION_COMPOSE)
 
     // Apollo
     implementation("com.apollographql.apollo", "apollo-runtime", Versions.APOLLO)
