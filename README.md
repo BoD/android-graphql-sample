@@ -27,14 +27,13 @@ Or using Apollo's gradle task:
 --header="Authorization: Bearer <your token>"
 ```
 
-(replace `<your token>` by the token you got from Github )
+(replace `<your token>` by the token you got from Github)
 
 ## Architecture of the project
 
-There is one activity which is simply a dumb host for 3 fragments:
+There is a single activity which is a host for 4 Compose layouts:
 
-### `ViewerInfoFragment`
-
+### `ViewerInfoLayout`
 Shows information about the "Viewer" (the currently logged-in user is called "Viewer" in the Github API):
 
 - Login
@@ -45,22 +44,29 @@ Shows information about the "Viewer" (the currently logged-in user is called "Vi
 
 Interesting to see: all this information is fetched with a single query (see `ViewerInfoQuery.graphql`).
 
-### `RepositoryListFragment`
+### `RepositoryListLayout`
+
 Displays a paginated list of the viewer's repositories.
 
 Interesting to see:
+
 - use of a GraphQL "fragment" (see `UserRepositoryListQuery.graphql`)
 - how pagination works in GraphQL ("cursor")
-- use of the Android Pagination component
+- integration with the Android Pagination component
 
-### `MiscFragment`
+### `RepositorySearchLayout`
+
+Use the "search" operation and demonstrate a case with heterogeneous results - either `User` or `Organization` (see `SearchQuery.graphql`)
+
+### `MiscLayout`
+
 Demonstrates mutations and error handling (see `AddCommentToIssueMutation.graphql`)
+
 - Add comment to an issue that exists
 - Add comment to an issue that doesn't exist (error case)
-- Use the "search" operation and demonstrate a case with heterogeneous results (either `User` or `Organization`, see `SearchQuery.graphql`)
-    
-    
+
 ## Useful links
+
 - [GraphQL spec](https://graphql.github.io/graphql-spec/June2018/#)
 - [Intro to GraphQL](https://graphql.org/learn/)
 - [Apollo Android README](https://github.com/apollographql/apollo-android)
