@@ -1,6 +1,7 @@
 package com.example.graphqlsample.api.apollo
 
-import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
 
 /**
  * Using an object (singleton) for the app's ApolloClient.
@@ -9,9 +10,13 @@ import com.apollographql.apollo.ApolloClient
 object ApolloClientManager {
     private const val SERVER_URL = "https://api.github.com/graphql"
 
-    val apolloClient: ApolloClient = ApolloClient.builder()
-        .serverUrl(SERVER_URL)
-        .addApplicationInterceptor(AuthInterceptor())
+    val apolloClient: ApolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = SERVER_URL,
+                interceptors = listOf(AuthInterceptor())
+            )
+        )
         .build()
 
 }

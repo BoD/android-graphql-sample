@@ -2,9 +2,7 @@ package com.example.graphqlsample.api.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.apollographql.apollo.api.Input
 import com.example.graphqlsample.api.apollo.ApolloClientManager
-import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.UserRepositoryListQuery
 import timber.log.Timber
 
@@ -21,13 +19,14 @@ class RepositoryPagingSource(
         try {
             val userRepositoryList: UserRepositoryListQuery.Data =
                 ApolloClientManager.apolloClient
-                    .suspendQuery(
+                    .query(
                         UserRepositoryListQuery(
                             userLogin = userLogin,
                             first = params.loadSize,
-                            after = Input.fromNullable(params.key),
+                            after = params.key,
                         )
                     )
+                    .execute()
                     .data!!
 
             val data = userRepositoryList.user!!.repositories.edges!! as List<UserRepositoryListQuery.Edge>

@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.R
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
-import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.ViewerInfoQuery
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
@@ -22,7 +21,8 @@ class ViewerInfoViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             try {
                 val viewerInfo: ViewerInfoQuery.Data = apolloClient
-                    .suspendQuery(ViewerInfoQuery())
+                    .query(ViewerInfoQuery())
+                    .execute()
                     .data!!
 
                 val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()

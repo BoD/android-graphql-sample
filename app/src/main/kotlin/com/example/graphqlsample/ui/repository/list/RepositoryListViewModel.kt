@@ -26,10 +26,10 @@ class RepositoryListViewModel(application: Application, userLogin: String) :
         .mapLatest { data ->
             data.map { item ->
                 SimpleRepositoryItemUiModel(
-                    name = item.node!!.fragments.repositoryFields.name,
-                    description = item.node.fragments.repositoryFields.description
+                    name = item.node!!.repositoryFields.name,
+                    description = item.node.repositoryFields.description
                         ?: getApplication<Application>().getString(R.string.repository_noDescription),
-                    stars = item.node.fragments.repositoryFields.stargazers.totalCount.toString()
+                    stars = item.node.repositoryFields.stargazers.totalCount.toString()
                 )
             }
         }

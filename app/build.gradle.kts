@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("com.apollographql.apollo") version Versions.APOLLO
+    id("com.apollographql.apollo3") version Versions.APOLLO
 }
 
 android {
@@ -52,7 +52,7 @@ android {
 }
 
 apollo {
-    generateKotlinModels.set(true)
+    packageName.set("com.example.graphqlsample.queries")
 }
 
 dependencies {
@@ -85,8 +85,7 @@ dependencies {
     implementation("androidx.navigation", "navigation-compose", Versions.ANDROIDX_NAVIGATION_COMPOSE)
 
     // Apollo
-    implementation("com.apollographql.apollo", "apollo-runtime", Versions.APOLLO)
-    implementation("com.apollographql.apollo", "apollo-coroutines-support", Versions.APOLLO)
+    implementation("com.apollographql.apollo3", "apollo-runtime", Versions.APOLLO)
 
     // Timber
     implementation("com.jakewharton.timber", "timber", Versions.TIMBER)

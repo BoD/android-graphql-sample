@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
-import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.SearchQuery
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -18,25 +17,26 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
         viewModelScope.launch {
             try {
                 val searchResults: SearchQuery.Data = apolloClient
-                    .suspendQuery(SearchQuery())
+                    .query(SearchQuery())
+                    .execute()
                     .data!!
 
                 uiModel.value = RepositorySearchUiModel.Loaded(searchResults.search.edges!!.map { edge ->
                     val searchResultRepositoryFields =
-                        edge!!.node!!.fragments.searchResultRepositoryFields!!
+                        edge!!.node!!.searchResultRepositoryFields!!
                     val owner = searchResultRepositoryFields.owner
                     val ownerType =
-                        if (owner.fragments.searchResultOrganizationFields != null) RepositorySearchItemUiModel.OwnerType.ORGANIZATION else RepositorySearchItemUiModel.OwnerType.USER
+                        if (owner.searchResultOrganizationFields != null) RepositorySearchItemUiModel.OwnerType.ORGANIZATION else RepositorySearchItemUiModel.OwnerType.USER
                     RepositorySearchItemUiModel(
                         name = searchResultRepositoryFields.name,
                         ownerType = ownerType,
                         ownerName = when (ownerType) {
-                            RepositorySearchItemUiModel.OwnerType.USER -> owner.fragments.searchResultUserFields!!.name
+                            RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.name
                                 ?: "(no name)"
-                            RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.fragments.searchResultOrganizationFields!!.name!!
+                            RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.searchResultOrganizationFields!!.name!!
                         },
                         ownerUserBio = when (ownerType) {
-                            RepositorySearchItemUiModel.OwnerType.USER -> owner.fragments.searchResultUserFields!!.bio?.trim().takeIf { !it.isNullOrBlank() }
+                            RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.bio?.trim().takeIf { !it.isNullOrBlank() }
                             RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> null
                         }
                     )

@@ -1,28 +1,21 @@
 package com.example.graphqlsample.api.apollo
 
-import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.withHeader
+import com.apollographql.apollo3.network.http.HttpInterceptor
+import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.example.graphqlsample.BuildConfig
-import java.util.concurrent.Executor
 
-class AuthInterceptor : ApolloInterceptor {
-    override fun interceptAsync(
-        request: ApolloInterceptor.InterceptorRequest,
-        chain: ApolloInterceptorChain,
-        dispatcher: Executor,
-        callBack: ApolloInterceptor.CallBack
-    ) {
-        chain.proceedAsync(
-            request.toBuilder().requestHeaders(
-                request.requestHeaders.toBuilder().addHeader(
-                    HEADER_AUTHORIZATION,
-                    "$HEADER_AUTHORIZATION_BEARER ${BuildConfig.GITHUB_OAUTH_KEY}"
-                ).build()
-            ).build(), dispatcher, callBack
+class AuthInterceptor : HttpInterceptor {
+    override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
+        return chain.proceed(
+            request.withHeader(
+                HEADER_AUTHORIZATION,
+                "$HEADER_AUTHORIZATION_BEARER ${BuildConfig.GITHUB_OAUTH_KEY}"
+            )
         )
     }
-
-    override fun dispose() {}
 
     companion object {
         private const val HEADER_AUTHORIZATION = "Authorization"
