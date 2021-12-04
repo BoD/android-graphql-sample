@@ -23,10 +23,10 @@ class ViewerInfoViewModel(application: Application) : AndroidViewModel(applicati
                 val viewerInfo: ViewerInfoQuery.Data = apolloClient
                     .query(ViewerInfoQuery())
                     .execute()
-                    .data!!
+                    .dataAssertNoErrors
 
                 val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()
-                repositoryUiModelList += viewerInfo.viewer.repositories.nodes!!.map { note ->
+                repositoryUiModelList += viewerInfo.viewer.repositories.nodes.map { note ->
                     SimpleRepositoryItemUiModel(
                         note!!.name,
                         note.description

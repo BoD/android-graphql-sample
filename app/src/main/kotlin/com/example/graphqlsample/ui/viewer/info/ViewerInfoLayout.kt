@@ -32,10 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
-import com.example.graphqlsample.ui.main.Destinations
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel

@@ -23,7 +23,7 @@ Or using Apollo's gradle task:
 ```shell
 ./gradlew :app:downloadApolloSchema \
 --endpoint='https://api.github.com/graphql' \
---schema='app/src/main/graphql/com/example/graphqlsample/queries/schema.json'  \
+--schema='app/src/main/graphql/com/example/graphqlsample/queries/schema.graphqls'  \
 --header="Authorization: Bearer <your token>"
 ```
 

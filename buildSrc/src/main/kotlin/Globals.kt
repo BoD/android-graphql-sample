@@ -4,7 +4,7 @@ object Versions {
     const val GRADLE = "7.2"
     const val KOTLIN = "1.5.31"
     const val KOTLINX_COROUTINES = "1.5.2"
-    const val APOLLO = "3.0.0-beta02-SNAPSHOT"
+    const val APOLLO = "3.0.0-beta05"
 
     const val ANDROIDX_APPCOMPAT = "1.3.1"
     const val ANDROIDX_CARDVIEW = "1.0.0"

@@ -19,11 +19,11 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                 val searchResults: SearchQuery.Data = apolloClient
                     .query(SearchQuery())
                     .execute()
-                    .data!!
+                    .dataAssertNoErrors
 
-                uiModel.value = RepositorySearchUiModel.Loaded(searchResults.search.edges!!.map { edge ->
+                uiModel.value = RepositorySearchUiModel.Loaded(searchResults.search.edges.map { edge ->
                     val searchResultRepositoryFields =
-                        edge!!.node!!.searchResultRepositoryFields!!
+                        edge!!.node.searchResultRepositoryFields!!
                     val owner = searchResultRepositoryFields.owner
                     val ownerType =
                         if (owner.searchResultOrganizationFields != null) RepositorySearchItemUiModel.OwnerType.ORGANIZATION else RepositorySearchItemUiModel.OwnerType.USER

@@ -1,7 +1,9 @@
 package com.example.graphqlsample.api.apollo
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.network.http.HeadersInterceptor
+import com.example.graphqlsample.BuildConfig
 
 /**
  * Using an object (singleton) for the app's ApolloClient.
@@ -10,13 +12,21 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
 object ApolloClientManager {
     private const val SERVER_URL = "https://api.github.com/graphql"
 
+    private const val HEADER_AUTHORIZATION = "Authorization"
+    private const val HEADER_AUTHORIZATION_BEARER = "Bearer"
+
     val apolloClient: ApolloClient = ApolloClient.Builder()
-        .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = SERVER_URL,
-                interceptors = listOf(AuthInterceptor())
+        .serverUrl(SERVER_URL)
+
+        // Add headers for authentication
+        .addHttpInterceptor(
+            HeadersInterceptor(
+                listOf(
+                    HttpHeader(
+                        HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_BEARER ${BuildConfig.GITHUB_OAUTH_KEY}"
+                    )
+                )
             )
         )
         .build()
-
 }

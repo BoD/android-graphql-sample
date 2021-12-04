@@ -8,7 +8,7 @@ query ViewerInfoQuery {
         email
 
         repositories(first: 10) {
-            nodes {
+            nodes @nonnull {
                 name
                 description
                 stargazers(first: 0) {

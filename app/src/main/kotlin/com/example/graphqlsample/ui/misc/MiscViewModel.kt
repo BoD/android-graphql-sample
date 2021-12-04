@@ -18,14 +18,14 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
     fun addCommentToIssue() = viewModelScope.launch {
         try {
             uiModel.value = uiModel.value.copy(isLoading = true)
-            val returnedSubjectId: String? = apolloClient.mutate(
+            val returnedSubjectId: String = apolloClient.mutation(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_GOOD,
                     body = createCommentBody()
                 )
             )
                 .execute()
-                .data?.addComment?.subject?.id
+                .dataAssertNoErrors.addComment.subject.id
 
             Timber.i("returnedSubjectId=$returnedSubjectId")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Success)
@@ -38,7 +38,7 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
     fun handleErrorResult() = viewModelScope.launch {
         try {
             uiModel.value = uiModel.value.copy(isLoading = true)
-            val errors = apolloClient.mutate(
+            val errors = apolloClient.mutation(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_BAD,
                     body = createCommentBody()
