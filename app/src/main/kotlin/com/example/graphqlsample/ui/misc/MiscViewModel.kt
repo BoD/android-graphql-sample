@@ -9,7 +9,7 @@ import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Date
+import java.util.*
 
 class MiscViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,7 +25,7 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
                 )
             )
                 .execute()
-                .dataAssertNoErrors.addComment.subject.id
+                .dataAssertNoErrors.addComment!!.subject.id
 
             Timber.i("returnedSubjectId=$returnedSubjectId")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Success)

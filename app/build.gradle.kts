@@ -52,10 +52,6 @@ android {
     }
 }
 
-apollo {
-    packageName.set("com.example.graphqlsample.queries")
-}
-
 dependencies {
     // Kotlin
     implementation(kotlin("stdlib", Versions.KOTLIN))
@@ -94,5 +90,14 @@ dependencies {
     // Testing
     testImplementation("junit", "junit", Versions.JUNIT)
     androidTestImplementation("androidx.test.ext", "junit", Versions.ANDROIDX_TEST_JUNIT)
-    androidTestImplementation("androidx.test.espresso", "espresso-core", Versions.ANDROIDX_TEST_ESPRESSO)
+    androidTestImplementation(
+        "androidx.test.espresso",
+        "espresso-core",
+        Versions.ANDROIDX_TEST_ESPRESSO
+    )
+}
+
+apollo {
+    packageName.set("com.example.graphqlsample.queries")
+    generateOptionalOperationVariables.set(false)
 }

@@ -2,7 +2,7 @@
 # See https://developer.github.com/v4/mutation/addcomment/
 #
 mutation AddCommentToIssueMutation($subjectId: ID!, $body: String!) {
-  addComment(input:{subjectId: $subjectId, body: $body}) @nonnull {
+  addComment(input:{subjectId: $subjectId, body: $body}) {
     subject @nonnull {
       id
     }
