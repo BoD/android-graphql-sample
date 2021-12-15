@@ -1,6 +1,6 @@
 # GraphQL Sample
 
-This is a small example project that uses the [Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) GraphQL library, with Github's API.
+This is a small example project that uses the [Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) GraphQL library on Android, with Github's API.
 
 The aim is to explore this library and GraphQL in general.
 
