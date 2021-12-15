@@ -1,8 +1,6 @@
 package com.example.graphqlsample.api.apollo
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.network.http.HeadersInterceptor
 import com.example.graphqlsample.BuildConfig
 
 /**
@@ -19,14 +17,9 @@ object ApolloClientManager {
         .serverUrl(SERVER_URL)
 
         // Add headers for authentication
-        .addHttpInterceptor(
-            HeadersInterceptor(
-                listOf(
-                    HttpHeader(
-                        HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_BEARER ${BuildConfig.GITHUB_OAUTH_KEY}"
-                    )
-                )
-            )
+        .addHttpHeader(
+            HEADER_AUTHORIZATION,
+            "$HEADER_AUTHORIZATION_BEARER ${BuildConfig.GITHUB_OAUTH_KEY}"
         )
         .build()
 }
