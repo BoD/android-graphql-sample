@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("com.apollographql.apollo") version Versions.APOLLO
+    id("com.apollographql.apollo3") version Versions.APOLLO
 }
 
 android {
@@ -40,6 +40,7 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
     }
 
     sourceSets {
@@ -47,12 +48,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.1"
+        kotlinCompilerExtensionVersion = Versions.COMPOSE
     }
-}
-
-apollo {
-    generateKotlinModels.set(true)
 }
 
 dependencies {
@@ -85,8 +82,7 @@ dependencies {
     implementation("androidx.navigation", "navigation-compose", Versions.ANDROIDX_NAVIGATION_COMPOSE)
 
     // Apollo
-    implementation("com.apollographql.apollo", "apollo-runtime", Versions.APOLLO)
-    implementation("com.apollographql.apollo", "apollo-coroutines-support", Versions.APOLLO)
+    implementation("com.apollographql.apollo3", "apollo-runtime", Versions.APOLLO)
 
     // Timber
     implementation("com.jakewharton.timber", "timber", Versions.TIMBER)
@@ -94,5 +90,14 @@ dependencies {
     // Testing
     testImplementation("junit", "junit", Versions.JUNIT)
     androidTestImplementation("androidx.test.ext", "junit", Versions.ANDROIDX_TEST_JUNIT)
-    androidTestImplementation("androidx.test.espresso", "espresso-core", Versions.ANDROIDX_TEST_ESPRESSO)
+    androidTestImplementation(
+        "androidx.test.espresso",
+        "espresso-core",
+        Versions.ANDROIDX_TEST_ESPRESSO
+    )
+}
+
+apollo {
+    packageName.set("com.example.graphqlsample.queries")
+    generateOptionalOperationVariables.set(false)
 }

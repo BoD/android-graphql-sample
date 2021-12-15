@@ -4,13 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
-import com.example.graphqlsample.core.apollo.suspendMutate
 import com.example.graphqlsample.queries.AddCommentToIssueMutation
 import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Date
+import java.util.*
 
 class MiscViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -19,13 +18,14 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
     fun addCommentToIssue() = viewModelScope.launch {
         try {
             uiModel.value = uiModel.value.copy(isLoading = true)
-            val returnedSubjectId: String? = apolloClient.suspendMutate(
+            val returnedSubjectId: String = apolloClient.mutation(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_GOOD,
                     body = createCommentBody()
                 )
             )
-                .data?.addComment?.subject?.id
+                .execute()
+                .dataAssertNoErrors.addComment!!.subject.id
 
             Timber.i("returnedSubjectId=$returnedSubjectId")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Success)
@@ -38,14 +38,16 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
     fun handleErrorResult() = viewModelScope.launch {
         try {
             uiModel.value = uiModel.value.copy(isLoading = true)
-            val errors = apolloClient.suspendMutate(
+            val errors = apolloClient.mutation(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_BAD,
                     body = createCommentBody()
                 )
-            ).errors!!
+            )
+                .execute()
+                .errors!!
             Timber.i("errors=$errors")
-            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error("${errors.first().customAttributes["type"]} ${errors.first().message}"))
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error("type: ${errors.first().extensions?.get("type")}, message: ${errors.first().message}"))
         } catch (e: Exception) {
             Timber.w(e, "Could not add comment to issue")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(e.message!!))

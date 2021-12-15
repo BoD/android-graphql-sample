@@ -2,38 +2,37 @@ package com.example.graphqlsample.api.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.apollographql.apollo.api.Input
 import com.example.graphqlsample.api.apollo.ApolloClientManager
-import com.example.graphqlsample.core.apollo.suspendQuery
 import com.example.graphqlsample.queries.UserRepositoryListQuery
 import timber.log.Timber
 
 class RepositoryPagingSource(
     private val userLogin: String,
-) : PagingSource<String, UserRepositoryListQuery.Edge>() {
+) : PagingSource<String, UserRepositoryListQuery.Node>() {
     private var loadedItems = 0
 
-    override fun getRefreshKey(state: PagingState<String, UserRepositoryListQuery.Edge>): String? = null
+    override fun getRefreshKey(state: PagingState<String, UserRepositoryListQuery.Node>): String? = null
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, UserRepositoryListQuery.Edge> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, UserRepositoryListQuery.Node> {
         if (params is LoadParams.Refresh) loadedItems = 0
 
         try {
             val userRepositoryList: UserRepositoryListQuery.Data =
                 ApolloClientManager.apolloClient
-                    .suspendQuery(
+                    .query(
                         UserRepositoryListQuery(
                             userLogin = userLogin,
                             first = params.loadSize,
-                            after = Input.fromNullable(params.key),
+                            after = params.key,
                         )
                     )
-                    .data!!
+                    .execute()
+                    .dataAssertNoErrors
 
-            val data = userRepositoryList.user!!.repositories.edges!! as List<UserRepositoryListQuery.Edge>
+            val data = userRepositoryList.user.repositories.edges
             loadedItems += data.size
             return LoadResult.Page(
-                data = data,
+                data = data.map { it!!.node },
                 prevKey = null,
                 nextKey = data.lastOrNull()?.cursor,
                 itemsAfter = userRepositoryList.user.repositories.totalCount - loadedItems,

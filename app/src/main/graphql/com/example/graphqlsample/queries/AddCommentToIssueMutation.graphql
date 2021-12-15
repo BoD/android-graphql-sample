@@ -3,7 +3,7 @@
 #
 mutation AddCommentToIssueMutation($subjectId: ID!, $body: String!) {
   addComment(input:{subjectId: $subjectId, body: $body}) {
-    subject {
+    subject @nonnull {
       id
     }
   }
