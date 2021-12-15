@@ -1,9 +1,6 @@
 # GraphQL Sample
 
-## Work in progress!
-
-This is a small example project that uses the [Apollo GraphQL Android library](https://github.com/apollographql/apollo-android),
-with Github's API.
+This is a small example project that uses the [Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) GraphQL library, with Github's API.
 
 The aim is to explore this library and GraphQL in general.
 
@@ -13,7 +10,7 @@ The aim is to explore this library and GraphQL in general.
 
 Then put it in `build.properties` (follow the sample in build.properties.SAMPLE).
 
-## How to get the schema.json file
+## Get the GraphQL schema file
 
 Either, manually:
 👉 https://github.com/octokit/graphql-schema
@@ -42,7 +39,9 @@ Shows information about the "Viewer" (the currently logged-in user is called "Vi
 - Total number of repos
 - Info about the first 10 repos (name, description, number of stars)
 
-Interesting to see: all this information is fetched with a single query (see `ViewerInfoQuery.graphql`).
+Interesting to see:
+- all this information is fetched with a single query (see `ViewerInfoQuery.graphql`)
+- use of the `@nonnull` annotation (specific to the Apollo Kotlin library), to "improve" the schema
 
 ### `RepositoryListLayout`
 
@@ -69,7 +68,7 @@ Demonstrates mutations and error handling (see `AddCommentToIssueMutation.graphq
 
 - [GraphQL spec](https://graphql.github.io/graphql-spec/June2018/#)
 - [Intro to GraphQL](https://graphql.org/learn/)
-- [Apollo Android README](https://github.com/apollographql/apollo-android)
+- [Apollo Kotlin README](https://github.com/apollographql/apollo-kotlin)
 - [Medium article about Apollo Android coroutines extensions](https://medium.com/dailymotion/consume-your-graphql-api-with-kotlin-coroutines-8dcf716712b2)
 - [Github GraphQL API doc](https://developer.github.com/v4/)
 - [Github GraphQL Explorer](https://developer.github.com/v4/explorer/) ([More info](https://developer.github.com/v4/guides/using-the-explorer/))
