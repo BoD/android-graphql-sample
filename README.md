@@ -39,7 +39,7 @@ Shows information about the "Viewer" (the currently logged-in user is called "Vi
 - Total number of repos
 - Info about the first 10 repos (name, description, number of stars)
 
-Interesting to see:
+Noteworthy:
 - all this information is fetched with a single query (see `ViewerInfoQuery.graphql`)
 - use of the `@nonnull` annotation (specific to the Apollo Kotlin library), to "improve" the schema
 
@@ -47,8 +47,7 @@ Interesting to see:
 
 Displays a paginated list of the viewer's repositories.
 
-Interesting to see:
-
+Noteworthy:
 - use of a GraphQL "fragment" (see `UserRepositoryListQuery.graphql`)
 - how pagination works in GraphQL ("cursor")
 - integration with the Android Pagination component
