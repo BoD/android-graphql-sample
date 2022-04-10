@@ -1,6 +1,5 @@
 package com.example.graphqlsample.ui.repository.list
 
-import android.app.Application
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +22,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -42,19 +37,7 @@ import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RepositoryListLayout(userLogin: String) {
-    val application = LocalContext.current.applicationContext as Application
-    val viewModel: RepositoryListViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return RepositoryListViewModel(
-                    application,
-                    userLogin
-                ) as T
-            }
-        }
-    )
+fun RepositoryListLayout(viewModel: RepositoryListViewModel) {
     RepositoryListLayoutContent(viewModel.pagingDataflow)
 }
 

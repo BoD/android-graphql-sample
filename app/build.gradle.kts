@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("com.apollographql.apollo3") version Versions.APOLLO
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -54,7 +55,6 @@ android {
 
 dependencies {
     // Kotlin
-    implementation(kotlin("stdlib", Versions.KOTLIN))
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-android", Versions.KOTLINX_COROUTINES)
 
     // AndroidX
@@ -65,9 +65,6 @@ dependencies {
     implementation("androidx.navigation", "navigation-fragment-ktx", Versions.ANDROIDX_NAVIGATION)
     implementation("androidx.navigation", "navigation-ui-ktx", Versions.ANDROIDX_NAVIGATION)
     implementation("androidx.paging", "paging-runtime-ktx", Versions.ANDROIDX_PAGING)
-
-    // Material
-    implementation("com.google.android.material", "material", Versions.MATERIAL)
 
     // Compose
     implementation("androidx.activity", "activity-compose", Versions.ANDROIDX_ACTIVITY_COMPOSE)
@@ -80,18 +77,27 @@ dependencies {
 
     // Apollo
     implementation("com.apollographql.apollo3", "apollo-runtime", Versions.APOLLO)
+    implementation("com.apollographql.apollo3", "apollo-normalized-cache", Versions.APOLLO)
+    implementation("com.apollographql.apollo3", "apollo-normalized-cache-sqlite", Versions.APOLLO)
 
     // Timber
     implementation("com.jakewharton.timber", "timber", Versions.TIMBER)
 
+    // Hilt
+    implementation("com.google.dagger", "hilt-android", Versions.HILT)
+    kapt("com.google.dagger", "hilt-android-compiler", Versions.HILT)
+    implementation("androidx.hilt", "hilt-navigation-compose", Versions.ANDROIDX_HILT_NAVIGATION_COMPOSE)
+
+
     // Testing
     testImplementation("junit", "junit", Versions.JUNIT)
     androidTestImplementation("androidx.test.ext", "junit", Versions.ANDROIDX_TEST_JUNIT)
-    androidTestImplementation(
-        "androidx.test.espresso",
-        "espresso-core",
-        Versions.ANDROIDX_TEST_ESPRESSO
-    )
+    androidTestImplementation("androidx.test.espresso", "espresso-core", Versions.ANDROIDX_TEST_ESPRESSO)
+}
+
+kapt {
+    // Needed for Hilt - see https://developer.android.com/training/dependency-injection/hilt-android#kts
+    correctErrorTypes = true
 }
 
 apollo {

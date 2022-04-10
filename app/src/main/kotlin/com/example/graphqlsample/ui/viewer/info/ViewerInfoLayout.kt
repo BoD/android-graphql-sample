@@ -31,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
@@ -39,13 +38,13 @@ import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel
-import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Error
-import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loaded
-import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loading
+import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.*
 
 @Composable
-fun ViewerInfoLayout(onSeeMoreClick: (String) -> Unit) {
-    val viewModel: ViewerInfoViewModel = viewModel()
+fun ViewerInfoLayout(
+    viewModel: ViewerInfoViewModel,
+    onSeeMoreClick: (String) -> Unit
+) {
     val uiModel by viewModel.uiModel.collectAsState()
     ViewerInfoLayoutContent(
         uiModel = uiModel,
@@ -63,7 +62,10 @@ private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: 
         if (uiModel is Error) {
             val message = stringResource(R.string.error_generic)
             LaunchedEffect(scaffoldState.snackbarHostState) {
-                scaffoldState.snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message,
+                    duration = SnackbarDuration.Indefinite
+                )
             }
         }
         Scaffold(scaffoldState = scaffoldState) {
@@ -106,7 +108,10 @@ private fun UserInfo(uiModel: Loaded) {
 }
 
 @Composable
-private fun RepositoryList(repositoryItemList: List<RepositoryItemUiModel>, onSeeMoreClick: () -> Unit) {
+private fun RepositoryList(
+    repositoryItemList: List<RepositoryItemUiModel>,
+    onSeeMoreClick: () -> Unit
+) {
     LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
         items(repositoryItemList) { repository ->
             when (repository) {
@@ -121,7 +126,14 @@ private fun RepositoryList(repositoryItemList: List<RepositoryItemUiModel>, onSe
 @Composable
 private fun MoreItem(onClick: () -> Unit) {
     ListItem(
-        text = { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(R.string.see_more), style = typography.button, textAlign = TextAlign.End) },
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.see_more),
+                style = typography.button,
+                textAlign = TextAlign.End
+            )
+        },
         modifier = Modifier.clickable(onClick = onClick)
     )
 }
@@ -135,8 +147,16 @@ private fun LoadedViewerInfoLayoutPreview() {
     ViewerInfoLayoutContent(
         Loaded(
             "JohnDoe42", "John Doe", "john.doe@example.com", listOf(
-                SimpleRepositoryItemUiModel("The first repository", "This repository is very interesting!", "4"),
-                SimpleRepositoryItemUiModel("The second repository", "I will not buy this record, it is scratched", "1"),
+                SimpleRepositoryItemUiModel(
+                    "The first repository",
+                    "This repository is very interesting!",
+                    "4"
+                ),
+                SimpleRepositoryItemUiModel(
+                    "The second repository",
+                    "I will not buy this record, it is scratched",
+                    "1"
+                ),
                 SeeMoreRepositoryItemUiModel,
             )
         )

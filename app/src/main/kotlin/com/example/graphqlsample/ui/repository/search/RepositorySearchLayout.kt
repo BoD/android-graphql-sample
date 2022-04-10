@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchItemUiModel
@@ -46,8 +45,7 @@ import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchUiModel
 
 @Composable
-fun RepositorySearchLayout() {
-    val viewModel: RepositorySearchViewModel = viewModel()
+fun RepositorySearchLayout(viewModel: RepositorySearchViewModel) {
     val uiModel by viewModel.uiModel.collectAsState()
     RepositorySearchLayoutContent(uiModel)
 }
@@ -89,9 +87,10 @@ private fun RepositoryList(repositorySearchItemList: List<RepositorySearchItemUi
 @Composable
 private fun Repository(repositorySearchItem: RepositorySearchItemUiModel) {
     Card(elevation = 4.dp) {
-        Column(Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Text(text = repositorySearchItem.name, style = MaterialTheme.typography.subtitle1)
             Spacer(Modifier.size(4.dp))

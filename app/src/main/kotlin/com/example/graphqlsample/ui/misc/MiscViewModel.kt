@@ -3,17 +3,24 @@ package com.example.graphqlsample.ui.misc
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
+import com.apollographql.apollo3.ApolloClient
 import com.example.graphqlsample.queries.AddCommentToIssueMutation
 import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.Date
+import javax.inject.Inject
 
-class MiscViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class MiscViewModel @Inject constructor(
+    application: Application,
+    private val apolloClient: ApolloClient,
+) : AndroidViewModel(application) {
 
-    val uiModel: MutableStateFlow<MiscUiModel> = MutableStateFlow(MiscUiModel(isLoading = false, status = Status.Idle))
+    val uiModel: MutableStateFlow<MiscUiModel> =
+        MutableStateFlow(MiscUiModel(isLoading = false, status = Status.Idle))
 
     fun addCommentToIssue() = viewModelScope.launch {
         try {
@@ -47,7 +54,10 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
                 .execute()
                 .errors!!
             Timber.i("errors=$errors")
-            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error("type: ${errors.first().extensions?.get("type")}, message: ${errors.first().message}"))
+            uiModel.value = MiscUiModel(
+                isLoading = false,
+                status = Status.Error("type: ${errors.first().extensions?.get("type")}, message: ${errors.first().message}")
+            )
         } catch (e: Exception) {
             Timber.w(e, "Could not add comment to issue")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(e.message!!))
@@ -78,6 +88,4 @@ class MiscViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 }
-
-
 

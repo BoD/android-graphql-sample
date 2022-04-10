@@ -3,18 +3,23 @@ package com.example.graphqlsample.ui.viewer.info
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo3.ApolloClient
 import com.example.graphqlsample.R
-import com.example.graphqlsample.api.apollo.ApolloClientManager.apolloClient
 import com.example.graphqlsample.queries.ViewerInfoQuery
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class ViewerInfoViewModel(application: Application) : AndroidViewModel(application) {
-
+@HiltViewModel
+class ViewerInfoViewModel @Inject constructor(
+    application: Application,
+    apolloClient: ApolloClient,
+) : AndroidViewModel(application) {
     val uiModel: MutableStateFlow<ViewerInfoUiModel> = MutableStateFlow(ViewerInfoUiModel.Loading)
 
     init {
