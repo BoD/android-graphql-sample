@@ -1,21 +1,10 @@
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
-    id("com.github.ben-manes.versions") version Versions.BEN_MANES_VERSIONS_PLUGIN
-}
-
-buildscript {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("com.android.tools.build", "gradle", Versions.ANDROID_GRADLE_PLUGIN)
-        classpath(kotlin("gradle-plugin", Versions.KOTLIN))
-        classpath("com.google.dagger", "hilt-android-gradle-plugin", Versions.HILT)
-    }
+    id("com.google.dagger.hilt.android") apply false
+    id("com.android.application") apply false
+    id("org.jetbrains.kotlin.android") apply false
 }
 
 allprojects {
@@ -30,26 +19,25 @@ tasks {
     register<Delete>("clean") {
         delete(rootProject.buildDir)
     }
-
-    wrapper {
-        distributionType = Wrapper.DistributionType.ALL
-        gradleVersion = Versions.GRADLE
-    }
-
-    // Configuration for gradle-versions-plugin
-    // Run `./gradlew dependencyUpdates` to see latest versions of dependencies
-    withType<DependencyUpdatesTask> {
-        resolutionStrategy {
-            componentSelection {
-                all {
-                    if (setOf("alpha", "beta", "rc", "preview", "eap", "m1").any { candidate.version.contains(it, true) }) {
-                        reject("Non stable")
-                    }
-                }
-            }
-        }
-    }
 }
 
 // Build properties
-Globals.buildProperties.loadFromFile(getOrCreateFile("build.properties"))
+ext["buildProperties"] = loadPropertiesFromFile("build.properties")
+fun Project.loadPropertiesFromFile(fileName: String): Properties {
+    val file = file(fileName)
+    if (!file.exists()) {
+        logger.warn("$fileName file does not exist: creating it now - please check its values")
+        copy {
+            from("${fileName}.SAMPLE")
+            into(project.projectDir)
+            rename { fileName }
+        }
+    }
+    val res = Properties()
+    val fileInputStream = FileInputStream(file)
+    fileInputStream.use {
+        res.load(it)
+    }
+    return res
+}
+

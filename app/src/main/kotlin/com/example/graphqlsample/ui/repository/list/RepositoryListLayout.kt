@@ -43,25 +43,30 @@ fun RepositoryListLayout(viewModel: RepositoryListViewModel) {
 
 @Composable
 private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRepositoryItemUiModel>>) {
-    MaterialTheme {
-        val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> = repositoryList.collectAsLazyPagingItems()
-        val state = lazyRepositoryItems.loadState
-        val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
+    val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> =
+        repositoryList.collectAsLazyPagingItems()
+    val state = lazyRepositoryItems.loadState
+    val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
 
-        val scaffoldState = rememberScaffoldState()
-        if (isError) {
-            val message = stringResource(R.string.error_generic)
-            LaunchedEffect(scaffoldState.snackbarHostState) {
-                scaffoldState.snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-            }
+    val scaffoldState = rememberScaffoldState()
+    if (isError) {
+        val message = stringResource(R.string.error_generic)
+        LaunchedEffect(scaffoldState.snackbarHostState) {
+            scaffoldState.snackbarHostState.showSnackbar(
+                message,
+                duration = SnackbarDuration.Indefinite
+            )
         }
-        Scaffold(scaffoldState = scaffoldState) {
-            Crossfade(state.refresh is LoadState.Loading) { isLoading ->
-                if (isLoading) {
-                    FullScreenLoading()
-                } else if (state.refresh is LoadState.NotLoading) {
-                    Loaded(lazyRepositoryItems)
-                }
+    }
+    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+        Crossfade(
+            state.refresh is LoadState.Loading,
+            modifier = Modifier.padding(paddingValues)
+        ) { isLoading ->
+            if (isLoading) {
+                FullScreenLoading()
+            } else if (state.refresh is LoadState.NotLoading) {
+                Loaded(lazyRepositoryItems)
             }
         }
     }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
@@ -37,7 +36,6 @@ private fun MiscLayoutContent(
     addCommentToIssue: () -> Unit,
     handleErrorResult: () -> Unit,
 ) {
-    MaterialTheme {
         val scaffoldState = rememberScaffoldState()
         when (uiModel.status) {
             MiscViewModel.MiscUiModel.Status.Success -> {
@@ -46,34 +44,42 @@ private fun MiscLayoutContent(
                     scaffoldState.snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
                 }
             }
+
             is MiscViewModel.MiscUiModel.Status.Error -> {
                 val message = stringResource(R.string.error_withInfo, uiModel.status.message)
                 LaunchedEffect(scaffoldState.snackbarHostState) {
-                    scaffoldState.snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message,
+                        duration = SnackbarDuration.Indefinite
+                    )
                 }
 
             }
+
             MiscViewModel.MiscUiModel.Status.Idle -> Unit
         }
 
-        Scaffold(scaffoldState = scaffoldState) {
-            Box(Modifier.fillMaxSize()) {
-                if (uiModel.isLoading) FullScreenLoading()
+    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+        Box(
+            Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            if (uiModel.isLoading) FullScreenLoading()
 
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button(onClick = addCommentToIssue) {
-                        Text(text = stringResource(R.string.misc_addCommentToIssue))
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = addCommentToIssue) {
+                    Text(text = stringResource(R.string.misc_addCommentToIssue))
                     }
                     Spacer(Modifier.size(8.dp))
                     Button(onClick = handleErrorResult) {
                         Text(text = stringResource(R.string.misc_handleErrorResult))
                     }
-                }
             }
         }
     }

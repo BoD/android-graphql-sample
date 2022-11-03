@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -57,24 +56,25 @@ fun ViewerInfoLayout(
 
 @Composable
 private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
-    MaterialTheme {
-        val scaffoldState = rememberScaffoldState()
-        if (uiModel is Error) {
-            val message = stringResource(R.string.error_generic)
-            LaunchedEffect(scaffoldState.snackbarHostState) {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message,
-                    duration = SnackbarDuration.Indefinite
-                )
-            }
+    val scaffoldState = rememberScaffoldState()
+    if (uiModel is Error) {
+        val message = stringResource(R.string.error_generic)
+        LaunchedEffect(scaffoldState.snackbarHostState) {
+            scaffoldState.snackbarHostState.showSnackbar(
+                message,
+                duration = SnackbarDuration.Indefinite
+            )
         }
-        Scaffold(scaffoldState = scaffoldState) {
-            Crossfade(uiModel is Loading) { isLoading ->
-                if (isLoading) {
-                    FullScreenLoading()
-                } else if (uiModel is Loaded) {
-                    Loaded(uiModel, onSeeMoreClick)
-                }
+    }
+    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+        Crossfade(
+            uiModel is Loading,
+            modifier = Modifier.padding(paddingValues)
+        ) { isLoading ->
+            if (isLoading) {
+                FullScreenLoading()
+            } else if (uiModel is Loaded) {
+                Loaded(uiModel, onSeeMoreClick)
             }
         }
     }

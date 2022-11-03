@@ -1,22 +1,25 @@
+import de.fayard.refreshVersions.core.versionFor
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("com.apollographql.apollo3") version Versions.APOLLO
+    id("com.apollographql.apollo3")
     id("dagger.hilt.android.plugin")
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.example.graphqlsample"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val githubOauthKey = Globals.buildProperties["githubOauthKey"]
+        val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
         buildConfigField("String", "GITHUB_OAUTH_KEY", "\"$githubOauthKey\"")
     }
 
@@ -49,50 +52,48 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.COMPOSE
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
     }
 }
 
 dependencies {
     // Kotlin
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-android", Versions.KOTLINX_COROUTINES)
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-android", "_")
 
     // AndroidX
-    implementation("androidx.appcompat", "appcompat", Versions.ANDROIDX_APPCOMPAT)
-    implementation("androidx.core", "core-ktx", Versions.ANDROIDX_CORE_KTX)
-    implementation("androidx.lifecycle", "lifecycle-extensions", Versions.ANDROIDX_LIFECYCLE)
-    implementation("androidx.lifecycle", "lifecycle-viewmodel-ktx", Versions.ANDROIDX_LIFECYCLE_VIEWMODEL)
-    implementation("androidx.navigation", "navigation-fragment-ktx", Versions.ANDROIDX_NAVIGATION)
-    implementation("androidx.navigation", "navigation-ui-ktx", Versions.ANDROIDX_NAVIGATION)
-    implementation("androidx.paging", "paging-runtime-ktx", Versions.ANDROIDX_PAGING)
+    implementation("androidx.appcompat", "appcompat", "_")
+    implementation("androidx.core", "core-ktx", "_")
+    implementation("androidx.lifecycle", "lifecycle-extensions", "_")
+    implementation("androidx.lifecycle", "lifecycle-viewmodel-ktx", "_")
+    implementation("androidx.paging", "paging-runtime-ktx", "_")
 
     // Compose
-    implementation("androidx.activity", "activity-compose", Versions.ANDROIDX_ACTIVITY_COMPOSE)
-    implementation("androidx.compose.material", "material", Versions.COMPOSE)
-    implementation("androidx.compose.animation", "animation", Versions.COMPOSE)
-    implementation("androidx.compose.ui", "ui-tooling", Versions.COMPOSE)
-    implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", Versions.ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE)
-    implementation("androidx.paging", "paging-compose", Versions.ANDROIDX_PAGING_COMPOSE)
-    implementation("androidx.navigation", "navigation-compose", Versions.ANDROIDX_NAVIGATION_COMPOSE)
+    implementation("androidx.activity", "activity-compose", "_")
+    implementation("androidx.compose.material", "material", "_")
+    implementation("androidx.compose.animation", "animation", "_")
+    implementation("androidx.compose.ui", "ui-tooling", "_")
+    implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", "_")
+    implementation("androidx.paging", "paging-compose", "_")
+    implementation("androidx.navigation", "navigation-compose", "_")
 
     // Apollo
-    implementation("com.apollographql.apollo3", "apollo-runtime", Versions.APOLLO)
-    implementation("com.apollographql.apollo3", "apollo-normalized-cache", Versions.APOLLO)
-    implementation("com.apollographql.apollo3", "apollo-normalized-cache-sqlite", Versions.APOLLO)
+    implementation("com.apollographql.apollo3", "apollo-runtime", "_")
+    implementation("com.apollographql.apollo3", "apollo-normalized-cache", "_")
+    implementation("com.apollographql.apollo3", "apollo-normalized-cache-sqlite", "_")
 
     // Timber
-    implementation("com.jakewharton.timber", "timber", Versions.TIMBER)
+    implementation("com.jakewharton.timber", "timber", "_")
 
     // Hilt
-    implementation("com.google.dagger", "hilt-android", Versions.HILT)
-    kapt("com.google.dagger", "hilt-android-compiler", Versions.HILT)
-    implementation("androidx.hilt", "hilt-navigation-compose", Versions.ANDROIDX_HILT_NAVIGATION_COMPOSE)
+    implementation("com.google.dagger", "hilt-android", "_")
+    kapt("com.google.dagger", "hilt-android-compiler", "_")
+    implementation("androidx.hilt", "hilt-navigation-compose", "_")
 
 
     // Testing
-    testImplementation("junit", "junit", Versions.JUNIT)
-    androidTestImplementation("androidx.test.ext", "junit", Versions.ANDROIDX_TEST_JUNIT)
-    androidTestImplementation("androidx.test.espresso", "espresso-core", Versions.ANDROIDX_TEST_ESPRESSO)
+    testImplementation("junit", "junit", "_")
+    androidTestImplementation("androidx.test.ext", "junit", "_")
+    androidTestImplementation("androidx.test.espresso", "espresso-core", "_")
 }
 
 kapt {
@@ -103,4 +104,14 @@ kapt {
 apollo {
     packageName.set("com.example.graphqlsample.queries")
     generateOptionalOperationVariables.set(false)
+
+    introspection {
+        endpointUrl.set("https://api.github.com/graphql")
+        schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
+        headers.put("Authorization", "Bearer $githubOauthKey")
+    }
 }
+
+// `./gradlew refreshVersions` to refresh dependencies versions
+// `./gradlew downloadServiceApolloSchemaFromIntrospection` to download the schema

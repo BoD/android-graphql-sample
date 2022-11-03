@@ -52,21 +52,25 @@ fun RepositorySearchLayout(viewModel: RepositorySearchViewModel) {
 
 @Composable
 private fun RepositorySearchLayoutContent(uiModel: RepositorySearchUiModel) {
-    MaterialTheme {
-        val scaffoldState = rememberScaffoldState()
-        if (uiModel is RepositorySearchUiModel.Error) {
-            val message = stringResource(R.string.error_generic)
-            LaunchedEffect(scaffoldState.snackbarHostState) {
-                scaffoldState.snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-            }
+    val scaffoldState = rememberScaffoldState()
+    if (uiModel is RepositorySearchUiModel.Error) {
+        val message = stringResource(R.string.error_generic)
+        LaunchedEffect(scaffoldState.snackbarHostState) {
+            scaffoldState.snackbarHostState.showSnackbar(
+                message,
+                duration = SnackbarDuration.Indefinite
+            )
         }
-        Scaffold(scaffoldState = scaffoldState) {
-            Crossfade(uiModel is RepositorySearchUiModel.Loading) { isLoading ->
-                if (isLoading) {
-                    FullScreenLoading()
-                } else if (uiModel is RepositorySearchUiModel.Loaded) {
-                    RepositoryList(uiModel.repositorySearchItemList)
-                }
+    }
+    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+        Crossfade(
+            uiModel is RepositorySearchUiModel.Loading,
+            modifier = Modifier.padding(paddingValues)
+        ) { isLoading ->
+            if (isLoading) {
+                FullScreenLoading()
+            } else if (uiModel is RepositorySearchUiModel.Loaded) {
+                RepositoryList(uiModel.repositorySearchItemList)
             }
         }
     }
@@ -96,7 +100,10 @@ private fun Repository(repositorySearchItem: RepositorySearchItemUiModel) {
             Spacer(Modifier.size(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = repositorySearchItem.ownerName, style = MaterialTheme.typography.body2)
+                    Text(
+                        text = repositorySearchItem.ownerName,
+                        style = MaterialTheme.typography.body2
+                    )
                 }
                 Spacer(Modifier.size(4.dp))
                 UserOrOrga(repositorySearchItem.ownerType)
@@ -104,7 +111,12 @@ private fun Repository(repositorySearchItem: RepositorySearchItemUiModel) {
             repositorySearchItem.ownerUserBio?.let { ownerUserBio ->
                 Spacer(Modifier.size(4.dp))
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = ownerUserBio, maxLines = 3, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.body2)
+                    Text(
+                        text = ownerUserBio,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.body2
+                    )
                 }
             }
         }
@@ -142,20 +154,24 @@ private fun UserOrOrga(ownerType: OwnerType) {
 @Preview
 @Composable
 private fun RepositorySearchLayoutPreview() {
-    RepositorySearchLayoutContent(uiModel = RepositorySearchUiModel.Loaded(listOf(
-        RepositorySearchItemUiModel(
-            name = "The First Project",
-            ownerType = OwnerType.USER,
-            ownerName = "User001",
-            ownerUserBio = "My super duper bio",
-        ),
+    RepositorySearchLayoutContent(
+        uiModel = RepositorySearchUiModel.Loaded(
+            listOf(
+                RepositorySearchItemUiModel(
+                    name = "The First Project",
+                    ownerType = OwnerType.USER,
+                    ownerName = "User001",
+                    ownerUserBio = "My super duper bio",
+                ),
 
-        RepositorySearchItemUiModel(
-            name = "The Second Project",
-            ownerType = OwnerType.ORGANIZATION,
-            ownerName = "Organization, inc.",
-            ownerUserBio = null,
-        ),
+                RepositorySearchItemUiModel(
+                    name = "The Second Project",
+                    ownerType = OwnerType.ORGANIZATION,
+                    ownerName = "Organization, inc.",
+                    ownerUserBio = null,
+                ),
 
-        )))
+                )
+        )
+    )
 }
