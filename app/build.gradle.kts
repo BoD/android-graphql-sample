@@ -69,7 +69,8 @@ dependencies {
 
     // Compose
     implementation("androidx.activity", "activity-compose", "_")
-    implementation("androidx.compose.material", "material", "_")
+    implementation("androidx.compose.material", "material-icons-core", "_")
+    implementation("androidx.compose.material3", "material3", "_")
     implementation("androidx.compose.animation", "animation", "_")
     implementation("androidx.compose.ui", "ui-tooling", "_")
     implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", "_")

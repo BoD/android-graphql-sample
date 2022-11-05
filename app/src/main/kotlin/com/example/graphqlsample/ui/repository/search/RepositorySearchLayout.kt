@@ -14,19 +14,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,19 +51,17 @@ fun RepositorySearchLayout(viewModel: RepositorySearchViewModel) {
     RepositorySearchLayoutContent(uiModel)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RepositorySearchLayoutContent(uiModel: RepositorySearchUiModel) {
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     if (uiModel is RepositorySearchUiModel.Error) {
         val message = stringResource(R.string.error_generic)
-        LaunchedEffect(scaffoldState.snackbarHostState) {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message,
-                duration = SnackbarDuration.Indefinite
-            )
+        LaunchedEffect(snackbarHostState) {
+            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
         }
     }
-    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Crossfade(
             uiModel is RepositorySearchUiModel.Loading,
             modifier = Modifier.padding(paddingValues)
@@ -90,34 +89,30 @@ private fun RepositoryList(repositorySearchItemList: List<RepositorySearchItemUi
 
 @Composable
 private fun Repository(repositorySearchItem: RepositorySearchItemUiModel) {
-    Card(elevation = 4.dp) {
+    Card(elevation = CardDefaults.cardElevation(4.dp)) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = repositorySearchItem.name, style = MaterialTheme.typography.subtitle1)
+            Text(text = repositorySearchItem.name, style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.size(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = repositorySearchItem.ownerName,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
+                Text(
+                    text = repositorySearchItem.ownerName,
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Spacer(Modifier.size(4.dp))
                 UserOrOrga(repositorySearchItem.ownerType)
             }
             repositorySearchItem.ownerUserBio?.let { ownerUserBio ->
                 Spacer(Modifier.size(4.dp))
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = ownerUserBio,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
+                Text(
+                    text = ownerUserBio,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }

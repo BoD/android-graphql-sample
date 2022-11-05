@@ -12,18 +12,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -54,19 +57,17 @@ fun ViewerInfoLayout(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     if (uiModel is Error) {
         val message = stringResource(R.string.error_generic)
-        LaunchedEffect(scaffoldState.snackbarHostState) {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message,
-                duration = SnackbarDuration.Indefinite
-            )
+        LaunchedEffect(snackbarHostState) {
+            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
         }
     }
-    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Crossfade(
             uiModel is Loading,
             modifier = Modifier.padding(paddingValues)
@@ -90,14 +91,14 @@ private fun Loaded(uiModel: Loaded, onSeeMoreClick: () -> Unit) {
 
 @Composable
 private fun UserInfo(uiModel: Loaded) {
-    Card(Modifier.fillMaxWidth(), elevation = 4.dp) {
+    Card(Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(4.dp)) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = uiModel.login, style = typography.h5)
+            Text(text = uiModel.login, style = MaterialTheme.typography.headlineMedium)
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                 uiModel.name?.let { Text(text = it) }
                 Spacer(Modifier.height(4.dp))
@@ -122,15 +123,15 @@ private fun RepositoryList(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MoreItem(onClick: () -> Unit) {
     ListItem(
-        text = {
+        headlineText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.see_more),
-                style = typography.button,
+                style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.End
             )
         },

@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -41,6 +44,7 @@ fun RepositoryListLayout(viewModel: RepositoryListViewModel) {
     RepositoryListLayoutContent(viewModel.pagingDataflow)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRepositoryItemUiModel>>) {
     val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> =
@@ -48,17 +52,14 @@ private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRe
     val state = lazyRepositoryItems.loadState
     val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
 
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     if (isError) {
         val message = stringResource(R.string.error_generic)
-        LaunchedEffect(scaffoldState.snackbarHostState) {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message,
-                duration = SnackbarDuration.Indefinite
-            )
+        LaunchedEffect(snackbarHostState) {
+            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
         }
     }
-    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Crossfade(
             state.refresh is LoadState.Loading,
             modifier = Modifier.padding(paddingValues)
@@ -107,7 +108,7 @@ private fun PlaceholderRepositoryItem() {
 
 @Composable
 private fun Shim(modifier: Modifier) {
-    val color = MaterialTheme.colors.onBackground.copy(alpha = .1F)
+    val color = MaterialTheme.colorScheme.onBackground.copy(alpha = .1F)
     Canvas(modifier) {
         drawRoundRect(color, size = size, cornerRadius = CornerRadius(size.height))
     }

@@ -7,15 +7,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,36 +33,33 @@ fun MiscLayout(viewModel: MiscViewModel) {
     MiscLayoutContent(uiModel, viewModel::addCommentToIssue, viewModel::handleErrorResult)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MiscLayoutContent(
     uiModel: MiscViewModel.MiscUiModel,
     addCommentToIssue: () -> Unit,
     handleErrorResult: () -> Unit,
 ) {
-        val scaffoldState = rememberScaffoldState()
-        when (uiModel.status) {
-            MiscViewModel.MiscUiModel.Status.Success -> {
-                val message = stringResource(R.string.success)
-                LaunchedEffect(scaffoldState.snackbarHostState) {
-                    scaffoldState.snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-                }
+    val snackbarHostState = remember { SnackbarHostState() }
+    when (uiModel.status) {
+        MiscViewModel.MiscUiModel.Status.Success -> {
+            val message = stringResource(R.string.success)
+            LaunchedEffect(snackbarHostState) {
+                snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
             }
-
-            is MiscViewModel.MiscUiModel.Status.Error -> {
-                val message = stringResource(R.string.error_withInfo, uiModel.status.message)
-                LaunchedEffect(scaffoldState.snackbarHostState) {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message,
-                        duration = SnackbarDuration.Indefinite
-                    )
-                }
-
-            }
-
-            MiscViewModel.MiscUiModel.Status.Idle -> Unit
         }
 
-    Scaffold(scaffoldState = scaffoldState) { paddingValues ->
+        is MiscViewModel.MiscUiModel.Status.Error -> {
+            val message = stringResource(R.string.error_withInfo, uiModel.status.message)
+            LaunchedEffect(snackbarHostState) {
+                snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
+            }
+        }
+
+        MiscViewModel.MiscUiModel.Status.Idle -> Unit
+    }
+
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Box(
             Modifier
                 .padding(paddingValues)
@@ -75,11 +75,11 @@ private fun MiscLayoutContent(
             ) {
                 Button(onClick = addCommentToIssue) {
                     Text(text = stringResource(R.string.misc_addCommentToIssue))
-                    }
-                    Spacer(Modifier.size(8.dp))
-                    Button(onClick = handleErrorResult) {
-                        Text(text = stringResource(R.string.misc_handleErrorResult))
-                    }
+                }
+                Spacer(Modifier.size(8.dp))
+                Button(onClick = handleErrorResult) {
+                    Text(text = stringResource(R.string.misc_handleErrorResult))
+                }
             }
         }
     }
@@ -91,5 +91,9 @@ private fun MiscLayoutContent(
 @Preview
 @Composable
 private fun MiscLayoutContentPreview() {
-    MiscLayoutContent(uiModel = MiscViewModel.MiscUiModel(isLoading = false, status = MiscViewModel.MiscUiModel.Status.Idle), {}, {})
+    MiscLayoutContent(
+        uiModel = MiscViewModel.MiscUiModel(
+            isLoading = false,
+            status = MiscViewModel.MiscUiModel.Status.Idle
+        ), {}, {})
 }
