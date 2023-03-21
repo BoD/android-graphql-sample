@@ -24,34 +24,43 @@ class ViewerInfoViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            try {
-                val viewerInfo: ViewerInfoQuery.Data = apolloClient
-                    .query(ViewerInfoQuery())
-                    .execute()
-                    .dataAssertNoErrors
+            val response = apolloClient
+                .query(ViewerInfoQuery())
+                .execute()
+            uiModel.value = when {
+                response.exception != null -> {
+                    Timber.w(response.exception, "Could not fetch user info")
+                    ViewerInfoUiModel.Error
+                }
 
-                val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()
-                repositoryUiModelList += viewerInfo.viewer.repositories.nodes.map { note ->
-                    SimpleRepositoryItemUiModel(
-                        note!!.name,
-                        note.description
-                            ?: getApplication<Application>().getString(R.string.repository_noDescription),
-                        note.stargazers.totalCount.toString()
+                response.hasErrors() -> {
+                    Timber.w("Could not fetch user info: ${response.errors!!.joinToString { it.message }}")
+                    ViewerInfoUiModel.Error
+                }
+
+                else -> {
+                    val viewerInfo: ViewerInfoQuery.Data = response.data!!
+
+                    val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()
+                    repositoryUiModelList += viewerInfo.viewer.repositories.nodes.map { note ->
+                        SimpleRepositoryItemUiModel(
+                            note!!.name,
+                            note.description
+                                ?: getApplication<Application>().getString(R.string.repository_noDescription),
+                            note.stargazers.totalCount.toString()
+                        )
+                    }
+                    if (viewerInfo.viewer.repositories.totalCount > 10) {
+                        repositoryUiModelList += SeeMoreRepositoryItemUiModel
+                    }
+
+                    ViewerInfoUiModel.Loaded(
+                        login = viewerInfo.viewer.login,
+                        name = viewerInfo.viewer.name,
+                        email = viewerInfo.viewer.email,
+                        repositoryItemList = repositoryUiModelList,
                     )
                 }
-                if (viewerInfo.viewer.repositories.totalCount > 10) {
-                    repositoryUiModelList += SeeMoreRepositoryItemUiModel
-                }
-
-                uiModel.value = ViewerInfoUiModel.Loaded(
-                    login = viewerInfo.viewer.login,
-                    name = viewerInfo.viewer.name,
-                    email = viewerInfo.viewer.email,
-                    repositoryItemList = repositoryUiModelList,
-                )
-            } catch (e: Exception) {
-                Timber.w(e, "Could not fetch user info")
-                uiModel.value = ViewerInfoUiModel.Error
             }
         }
     }

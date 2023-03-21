@@ -45,18 +45,21 @@ class MiscViewModel @Inject constructor(
     fun handleErrorResult() = viewModelScope.launch {
         try {
             uiModel.value = uiModel.value.copy(isLoading = true)
-            val errors = apolloClient.mutation(
+            val response = apolloClient.mutation(
                 AddCommentToIssueMutation(
                     subjectId = ISSUE_ID_BAD,
                     body = createCommentBody()
                 )
             )
                 .execute()
-                .errors!!
-            Timber.i("errors=$errors")
+            Timber.i("errors=${response.errors} exception=${response.exception}")
             uiModel.value = MiscUiModel(
                 isLoading = false,
-                status = Status.Error("type: ${errors.first().extensions?.get("type")}, message: ${errors.first().message}")
+                status = if (response.exception != null) {
+                    Status.Error(response.exception!!.message!!)
+                } else {
+                    Status.Error("type: ${response.errors!!.first().extensions?.get("type")}, message: ${response.errors!!.first().message}")
+                }
             )
         } catch (e: Exception) {
             Timber.w(e, "Could not add comment to issue")

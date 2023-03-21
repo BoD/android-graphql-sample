@@ -17,31 +17,38 @@ class RepositoryPagingSource(
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, UserRepositoryListQuery.Node> {
         if (params is LoadParams.Refresh) loadedItems = 0
-
-        try {
-            val userRepositoryList: UserRepositoryListQuery.Data =
-                apolloClient
-                    .query(
-                        UserRepositoryListQuery(
-                            userLogin = userLogin,
-                            first = params.loadSize,
-                            after = params.key,
-                        )
-                    )
-                    .execute()
-                    .dataAssertNoErrors
-
-            val data = userRepositoryList.user.repositories.edges
-            loadedItems += data.size
-            return LoadResult.Page(
-                data = data.map { it!!.node },
-                prevKey = null,
-                nextKey = data.lastOrNull()?.cursor,
-                itemsAfter = userRepositoryList.user.repositories.totalCount - loadedItems,
+        val response = apolloClient
+            .query(
+                UserRepositoryListQuery(
+                    userLogin = userLogin,
+                    first = params.loadSize,
+                    after = params.key,
+                )
             )
-        } catch (e: Exception) {
-            Timber.w(e, "Could not fetch user repository list")
-            return LoadResult.Error(e)
+            .execute()
+
+        return when {
+            response.exception != null -> {
+                Timber.w(response.exception, "Could not fetch user repository list")
+                LoadResult.Error(response.exception!!)
+            }
+
+            response.hasErrors() -> {
+                val errorMessage = response.errors!!.joinToString { it.message }
+                Timber.w("Could not fetch user repository list: $errorMessage")
+                LoadResult.Error(Exception("Could not fetch user repository list: $errorMessage"))
+            }
+
+            else -> {
+                val edges = response.data!!.user.repositories.edges
+                loadedItems += edges.size
+                LoadResult.Page(
+                    data = edges.map { it!!.node },
+                    prevKey = null,
+                    nextKey = edges.lastOrNull()?.cursor,
+                    itemsAfter = response.data!!.user.repositories.totalCount - loadedItems,
+                )
+            }
         }
     }
 }

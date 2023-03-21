@@ -17,46 +17,55 @@ class RepositorySearchViewModel @Inject constructor(
     apolloClient: ApolloClient,
 ) : AndroidViewModel(application) {
 
-    val uiModel: MutableStateFlow<RepositorySearchUiModel> =
-        MutableStateFlow(RepositorySearchUiModel.Loading)
+    val uiModel: MutableStateFlow<RepositorySearchUiModel> = MutableStateFlow(RepositorySearchUiModel.Loading)
 
     init {
         viewModelScope.launch {
-            try {
-                val searchResults: SearchQuery.Data = apolloClient
-                    .query(SearchQuery())
-                    .execute()
-                    .dataAssertNoErrors
+            val response = apolloClient
+                .query(SearchQuery())
+                .execute()
+            uiModel.value = when {
+                response.exception != null -> {
+                    Timber.w(response.exception!!, "Could not fetch search results")
+                    RepositorySearchUiModel.Error
+                }
 
-                uiModel.value =
-                    RepositorySearchUiModel.Loaded(searchResults.search.edges.map { edge ->
-                        val searchResultRepositoryFields =
-                            edge!!.node.searchResultRepositoryFields!!
-                        val owner = searchResultRepositoryFields.owner
-                        val ownerType = if (owner.searchResultOrganizationFields != null) {
-                            RepositorySearchItemUiModel.OwnerType.ORGANIZATION
-                        } else {
-                            RepositorySearchItemUiModel.OwnerType.USER
-                        }
-                        RepositorySearchItemUiModel(
-                            name = searchResultRepositoryFields.name,
-                            ownerType = ownerType,
-                            ownerName = when (ownerType) {
-                                RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.name
-                                    ?: "(no name)"
-                                RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.searchResultOrganizationFields!!.name!!
-                            },
-                            ownerUserBio = when (ownerType) {
-                                RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.bio?.trim()
-                                    .takeIf { !it.isNullOrBlank() }
-                                RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> null
+                response.hasErrors() -> {
+                    Timber.w("Could not fetch search results: ${response.errors!!.joinToString { it.message }}")
+                    RepositorySearchUiModel.Error
+                }
+
+                else -> {
+                    val searchResults: SearchQuery.Data = response.data!!
+                    RepositorySearchUiModel.Loaded(
+                        searchResults.search.edges.map { edge ->
+                            val searchResultRepositoryFields =
+                                edge!!.node.searchResultRepositoryFields!!
+                            val owner = searchResultRepositoryFields.owner
+                            val ownerType = if (owner.searchResultOrganizationFields != null) {
+                                RepositorySearchItemUiModel.OwnerType.ORGANIZATION
+                            } else {
+                                RepositorySearchItemUiModel.OwnerType.USER
                             }
-                        )
-                    }
+                            RepositorySearchItemUiModel(
+                                name = searchResultRepositoryFields.name,
+                                ownerType = ownerType,
+                                ownerName = when (ownerType) {
+                                    RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.name
+                                        ?: "(no name)"
+
+                                    RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.searchResultOrganizationFields!!.name!!
+                                },
+                                ownerUserBio = when (ownerType) {
+                                    RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.bio?.trim()
+                                        .takeIf { !it.isNullOrBlank() }
+
+                                    RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> null
+                                }
+                            )
+                        }
                     )
-            } catch (e: Exception) {
-                Timber.w(e, "Could not fetch search results")
-                uiModel.value = RepositorySearchUiModel.Error
+                }
             }
         }
     }
