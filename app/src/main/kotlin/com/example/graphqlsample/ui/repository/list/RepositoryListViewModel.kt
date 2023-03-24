@@ -51,8 +51,8 @@ class RepositoryListViewModel @Inject constructor(
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             appendCall = { response, loadSize ->
-                val edges = response?.data?.user?.repositories?.edges
-                if (edges != null && edges.isEmpty()) {
+                val hasNextPage = response?.data?.user?.repositories?.pageInfo?.hasNextPage == true
+                if (response != null && !hasNextPage) {
                     // Reached the end of the list
                     return@Pager null
                 }
@@ -61,7 +61,7 @@ class RepositoryListViewModel @Inject constructor(
                         UserRepositoryListQuery(
                             userLogin = userLogin,
                             first = loadSize,
-                            after = edges?.lastOrNull()?.cursor,
+                            after = response?.data?.user?.repositories?.pageInfo?.endCursor,
                         )
                     )
             },
