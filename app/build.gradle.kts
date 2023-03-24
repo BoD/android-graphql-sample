@@ -80,6 +80,7 @@ dependencies {
     implementation("com.apollographql.apollo3", "apollo-runtime", "_")
     implementation("com.apollographql.apollo3", "apollo-normalized-cache", "_")
     implementation("com.apollographql.apollo3", "apollo-normalized-cache-sqlite", "_")
+    implementation("com.apollographql.apollo3", "apollo-compose-paging-support", "_")
 
     // Timber
     implementation("com.jakewharton.timber", "timber", "_")
