@@ -9,9 +9,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.compose.paging.Pager
 import com.example.graphqlsample.R
-import com.example.graphqlsample.api.repository.RepositoryPagingSource
+import com.example.graphqlsample.queries.UserRepositoryListQuery
 import com.example.graphqlsample.ui.navigation.NavigationArguments
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,17 +25,15 @@ import javax.inject.Inject
 @HiltViewModel
 class RepositoryListViewModel @Inject constructor(
     application: Application,
-    apolloClient: ApolloClient,
+    private val apolloClient: ApolloClient,
     savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(application) {
 
+    private val userLogin = savedStateHandle.get<String>(NavigationArguments.USER_LOGIN)!!
+
     val pagingDataflow: Flow<PagingData<SimpleRepositoryItemUiModel>> =
-        Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-            RepositoryPagingSource(
-                userLogin = savedStateHandle.get<String>(NavigationArguments.USER_LOGIN)!!,
-                apolloClient = apolloClient
-            )
-        }.flow
+        createPager()
+            .flow
             .map { data ->
                 data.map { item ->
                     SimpleRepositoryItemUiModel(
@@ -44,6 +45,38 @@ class RepositoryListViewModel @Inject constructor(
                 }
             }
             .cachedIn(viewModelScope)
+
+    @OptIn(ApolloExperimental::class)
+    private fun createPager(): Pager<ApolloCall<UserRepositoryListQuery.Data>, UserRepositoryListQuery.Node> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            appendCall = { response, loadSize ->
+                val hasNextPage = response?.data?.user?.repositories?.pageInfo?.hasNextPage == true
+                if (response != null && !hasNextPage) {
+                    // Reached the end of the list
+                    return@Pager null
+                }
+                apolloClient
+                    .query(
+                        UserRepositoryListQuery(
+                            userLogin = userLogin,
+                            first = loadSize,
+                            after = response?.data?.user?.repositories?.pageInfo?.endCursor,
+                        )
+                    )
+            },
+            itemsAfter = { response, loadedItemsCount ->
+                response.data!!.user.repositories.totalCount - loadedItemsCount
+            },
+            getItems = { response ->
+                if (response.hasErrors()) {
+                    Result.failure(Exception("Could not fetch page of repositories: ${response.errors!!.joinToString { it.message }}"))
+                } else {
+                    Result.success(response.data!!.user.repositories.edges.map { edge -> edge!!.node })
+                }
+            },
+        )
+    }
 
     companion object {
         private const val PAGE_SIZE = 10
