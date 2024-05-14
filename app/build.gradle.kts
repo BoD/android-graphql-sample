@@ -38,13 +38,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-        freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     sourceSets {
@@ -81,6 +80,7 @@ dependencies {
     implementation("com.apollographql.apollo3", "apollo-runtime", "_")
     implementation("com.apollographql.apollo3", "apollo-normalized-cache", "_")
     implementation("com.apollographql.apollo3", "apollo-normalized-cache-sqlite", "_")
+    implementation("com.apollographql.apollo3", "apollo-compose-paging-support", "_")
 
     // Timber
     implementation("com.jakewharton.timber", "timber", "_")
@@ -103,16 +103,18 @@ kapt {
 }
 
 apollo {
-    packageName.set("com.example.graphqlsample.queries")
-    generateOptionalOperationVariables.set(false)
+    service("main") {
+        packageName.set("com.example.graphqlsample.queries")
+        generateOptionalOperationVariables.set(false)
 
-    introspection {
-        endpointUrl.set("https://api.github.com/graphql")
-        schemaFile.set(file("src/main/graphql/schema.graphqls"))
-        val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
-        headers.put("Authorization", "Bearer $githubOauthKey")
+        introspection {
+            endpointUrl.set("https://api.github.com/graphql")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+            val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
+            headers.put("Authorization", "Bearer $githubOauthKey")
+        }
     }
 }
 
 // `./gradlew refreshVersions` to refresh dependencies versions
-// `./gradlew downloadServiceApolloSchemaFromIntrospection` to download the schema
+// `./gradlew downloadMainApolloSchemaFromIntrospection` to download the schema
