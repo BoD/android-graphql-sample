@@ -3,7 +3,7 @@ package com.example.graphqlsample.api.repository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import com.example.graphqlsample.queries.UserRepositoryListQuery
+import com.example.graphqlsample.graphql.UserRepositoryListQuery
 import timber.log.Timber
 
 class RepositoryPagingSource(

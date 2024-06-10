@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.ApolloClient
 import com.example.graphqlsample.R
-import com.example.graphqlsample.queries.ViewerInfoQuery
+import com.example.graphqlsample.graphql.ViewerInfoQuery
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
@@ -24,16 +24,17 @@ class ViewerInfoViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            try {
-                val viewerInfo: ViewerInfoQuery.Data = apolloClient
-                    .query(ViewerInfoQuery())
-                    .execute()
-                    .dataAssertNoErrors
+            val apolloResponse = apolloClient
+                .query(ViewerInfoQuery())
+                .execute()
 
+            val viewerInfo: ViewerInfoQuery.Data? = apolloResponse.data
+            if (viewerInfo != null) {
                 val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()
                 repositoryUiModelList += viewerInfo.viewer.repositories.nodes.map { note ->
                     SimpleRepositoryItemUiModel(
-                        note!!.name,
+                        note!!.id,
+                        note.name,
                         note.description
                             ?: getApplication<Application>().getString(R.string.repository_noDescription),
                         note.stargazers.totalCount.toString()
@@ -49,16 +50,16 @@ class ViewerInfoViewModel @Inject constructor(
                     email = viewerInfo.viewer.email,
                     repositoryItemList = repositoryUiModelList,
                 )
-            } catch (e: Exception) {
-                Timber.w(e, "Could not fetch user info")
+            } else if (apolloResponse.exception != null) {
+                Timber.w(apolloResponse.exception, "Could not fetch user info")
                 uiModel.value = ViewerInfoUiModel.Error
             }
         }
     }
 
     sealed interface ViewerInfoUiModel {
-        object Loading : ViewerInfoUiModel
-        object Error : ViewerInfoUiModel
+        data object Loading : ViewerInfoUiModel
+        data object Error : ViewerInfoUiModel
         data class Loaded(
             val login: String,
             val name: String?,

@@ -1,21 +1,21 @@
-import de.fayard.refreshVersions.core.versionFor
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("com.apollographql.apollo3")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.apollo)
 }
 
 android {
-    compileSdk = 33
+    namespace = "com.example.graphqlsample"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.graphqlsample"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -24,77 +24,67 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
-    buildFeatures {
-        compose = true
-    }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-        freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
-    sourceSets {
-        getByName("main").java.srcDirs("src/main/kotlin")
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
+    buildFeatures {
+        buildConfig = true
+        compose = true
     }
 }
 
 dependencies {
     // Kotlin
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-android", "_")
+    implementation(libs.kotlinx.coroutines.android)
 
     // AndroidX
-    implementation("androidx.appcompat", "appcompat", "_")
-    implementation("androidx.core", "core-ktx", "_")
-    implementation("androidx.lifecycle", "lifecycle-extensions", "_")
-    implementation("androidx.lifecycle", "lifecycle-viewmodel-ktx", "_")
-    implementation("androidx.paging", "paging-runtime-ktx", "_")
+    implementation(libs.appcompat)
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.extensions)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.paging.runtime.ktx)
 
     // Compose
-    implementation("androidx.activity", "activity-compose", "_")
-    implementation("androidx.compose.material", "material-icons-core", "_")
-    implementation("androidx.compose.material3", "material3", "_")
-    implementation("androidx.compose.animation", "animation", "_")
-    implementation("androidx.compose.ui", "ui-tooling", "_")
-    implementation("androidx.lifecycle", "lifecycle-viewmodel-compose", "_")
-    implementation("androidx.paging", "paging-compose", "_")
-    implementation("androidx.navigation", "navigation-compose", "_")
+    implementation(libs.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.animation)
+    implementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.paging.compose)
+    implementation(libs.navigation.compose)
 
     // Apollo
-    implementation("com.apollographql.apollo3", "apollo-runtime", "_")
-    implementation("com.apollographql.apollo3", "apollo-normalized-cache", "_")
-    implementation("com.apollographql.apollo3", "apollo-normalized-cache-sqlite", "_")
+    implementation(libs.apollo.runtime)
+    implementation(libs.apollo.normalized.cache.sqlite)
 
     // Timber
-    implementation("com.jakewharton.timber", "timber", "_")
+    implementation(libs.timber)
 
     // Hilt
-    implementation("com.google.dagger", "hilt-android", "_")
-    kapt("com.google.dagger", "hilt-android-compiler", "_")
-    implementation("androidx.hilt", "hilt-navigation-compose", "_")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.navigation.compose)
 
 
     // Testing
-    testImplementation("junit", "junit", "_")
-    androidTestImplementation("androidx.test.ext", "junit", "_")
-    androidTestImplementation("androidx.test.espresso", "espresso-core", "_")
+    testImplementation(libs.junit.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
 
 kapt {
@@ -103,16 +93,17 @@ kapt {
 }
 
 apollo {
-    packageName.set("com.example.graphqlsample.queries")
-    generateOptionalOperationVariables.set(false)
+    service("github") {
+        packageName.set("com.example.graphqlsample.graphql")
+        generateOptionalOperationVariables.set(false)
 
-    introspection {
-        endpointUrl.set("https://api.github.com/graphql")
-        schemaFile.set(file("src/main/graphql/schema.graphqls"))
-        val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
-        headers.put("Authorization", "Bearer $githubOauthKey")
+        introspection {
+            endpointUrl.set("https://api.github.com/graphql")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+            val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
+            headers.put("Authorization", "Bearer $githubOauthKey")
+        }
     }
 }
 
-// `./gradlew refreshVersions` to refresh dependencies versions
-// `./gradlew downloadServiceApolloSchemaFromIntrospection` to download the schema
+// `./gradlew downloadGithubApolloSchemaFromIntrospection` to download the schema

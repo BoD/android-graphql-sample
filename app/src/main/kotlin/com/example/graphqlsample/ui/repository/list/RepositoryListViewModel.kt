@@ -36,6 +36,7 @@ class RepositoryListViewModel @Inject constructor(
             .map { data ->
                 data.map { item ->
                     SimpleRepositoryItemUiModel(
+                        id = item.repositoryFields.id,
                         name = item.repositoryFields.name,
                         description = item.repositoryFields.description
                             ?: getApplication<Application>().getString(R.string.repository_noDescription),

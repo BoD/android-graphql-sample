@@ -9,6 +9,7 @@ query ViewerInfoQuery {
 
         repositories(first: 10) {
             nodes @nonnull {
+                id
                 name
                 description
                 stargazers(first: 0) {

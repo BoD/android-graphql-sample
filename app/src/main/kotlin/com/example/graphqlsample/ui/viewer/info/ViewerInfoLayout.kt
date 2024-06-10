@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,7 +39,9 @@ import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel
-import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.*
+import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Error
+import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loaded
+import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loading
 
 @Composable
 fun ViewerInfoLayout(
@@ -57,7 +58,7 @@ fun ViewerInfoLayout(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -70,7 +71,8 @@ private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: 
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Crossfade(
             uiModel is Loading,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            label = "loading",
         ) { isLoading ->
             if (isLoading) {
                 FullScreenLoading()
@@ -123,11 +125,10 @@ private fun RepositoryList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MoreItem(onClick: () -> Unit) {
     ListItem(
-        headlineText = {
+        headlineContent = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.see_more),
@@ -149,11 +150,13 @@ private fun LoadedViewerInfoLayoutPreview() {
         Loaded(
             "JohnDoe42", "John Doe", "john.doe@example.com", listOf(
                 SimpleRepositoryItemUiModel(
+                    "0",
                     "The first repository",
                     "This repository is very interesting!",
                     "4"
                 ),
                 SimpleRepositoryItemUiModel(
+                    "1",
                     "The second repository",
                     "I will not buy this record, it is scratched",
                     "1"

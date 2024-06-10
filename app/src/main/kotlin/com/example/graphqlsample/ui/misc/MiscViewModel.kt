@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.ApolloClient
-import com.example.graphqlsample.queries.AddCommentToIssueMutation
+import com.example.graphqlsample.graphql.AddCommentToIssueMutation
 import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,48 +19,45 @@ class MiscViewModel @Inject constructor(
     private val apolloClient: ApolloClient,
 ) : AndroidViewModel(application) {
 
-    val uiModel: MutableStateFlow<MiscUiModel> =
-        MutableStateFlow(MiscUiModel(isLoading = false, status = Status.Idle))
+    val uiModel: MutableStateFlow<MiscUiModel> = MutableStateFlow(MiscUiModel(isLoading = false, status = Status.Idle))
 
     fun addCommentToIssue() = viewModelScope.launch {
-        try {
-            uiModel.value = uiModel.value.copy(isLoading = true)
-            val returnedSubjectId: String = apolloClient.mutation(
-                AddCommentToIssueMutation(
-                    subjectId = ISSUE_ID_GOOD,
-                    body = createCommentBody()
-                )
+        uiModel.value = uiModel.value.copy(isLoading = true)
+        val apolloResponse = apolloClient.mutation(
+            AddCommentToIssueMutation(
+                subjectId = ISSUE_ID_GOOD,
+                body = createCommentBody()
             )
-                .execute()
-                .dataAssertNoErrors.addComment!!.subject.id
-
+        ).execute()
+        val data = apolloResponse.data
+        if (data != null) {
+            val returnedSubjectId: String = data.addComment!!.subject.id
             Timber.i("returnedSubjectId=$returnedSubjectId")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Success)
-        } catch (e: Exception) {
-            Timber.w(e, "Could not add comment to issue")
-            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(e.message!!))
+        } else if (apolloResponse.exception != null) {
+            Timber.w(apolloResponse.exception, "Could not add comment to issue")
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(apolloResponse.exception!!.message!!))
         }
     }
 
     fun handleErrorResult() = viewModelScope.launch {
-        try {
-            uiModel.value = uiModel.value.copy(isLoading = true)
-            val errors = apolloClient.mutation(
-                AddCommentToIssueMutation(
-                    subjectId = ISSUE_ID_BAD,
-                    body = createCommentBody()
-                )
+        uiModel.value = uiModel.value.copy(isLoading = true)
+        val apolloResponse = apolloClient.mutation(
+            AddCommentToIssueMutation(
+                subjectId = ISSUE_ID_BAD,
+                body = createCommentBody()
             )
-                .execute()
-                .errors!!
+        ).execute()
+        val errors = apolloResponse.errors
+        if (errors != null) {
             Timber.i("errors=$errors")
             uiModel.value = MiscUiModel(
                 isLoading = false,
                 status = Status.Error("type: ${errors.first().extensions?.get("type")}, message: ${errors.first().message}")
             )
-        } catch (e: Exception) {
-            Timber.w(e, "Could not add comment to issue")
-            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(e.message!!))
+        } else if (apolloResponse.exception != null) {
+            Timber.w(apolloResponse.exception, "Could not add comment to issue")
+            uiModel.value = MiscUiModel(isLoading = false, status = Status.Error(apolloResponse.exception!!.message!!))
         }
     }
 
@@ -73,8 +70,8 @@ class MiscViewModel @Inject constructor(
         val status: Status,
     ) {
         sealed interface Status {
-            object Idle : Status
-            object Success : Status
+            data object Idle : Status
+            data object Success : Status
             data class Error(val message: String) : Status
         }
     }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -33,7 +32,6 @@ fun MiscLayout(viewModel: MiscViewModel) {
     MiscLayoutContent(uiModel, viewModel::addCommentToIssue, viewModel::handleErrorResult)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MiscLayoutContent(
     uiModel: MiscViewModel.MiscUiModel,

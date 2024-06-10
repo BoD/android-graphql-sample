@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.graphqlsample.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainLayout(
     onMenuSearchClick: () -> Unit,
@@ -32,6 +31,7 @@ fun MainLayout(
     MaterialTheme {
         Scaffold(
             topBar = {
+                @OptIn(ExperimentalMaterial3Api::class)
                 TopAppBar(
                     title = { Text(stringResource(R.string.app_name)) },
                     actions = {

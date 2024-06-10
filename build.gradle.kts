@@ -1,25 +1,18 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("com.google.dagger.hilt.android") apply false
-    id("com.android.application") apply false
-    id("org.jetbrains.kotlin.android") apply false
+    alias(libs.plugins.benManes.versions)
+
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.kapt) apply false
+    alias(libs.plugins.apollo) apply false
 }
 
-allprojects {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-    }
-}
-
-tasks {
-    register<Delete>("clean") {
-        delete(rootProject.buildDir)
-    }
-}
 
 // Build properties
 ext["buildProperties"] = loadPropertiesFromFile("build.properties")
@@ -41,3 +34,11 @@ fun Project.loadPropertiesFromFile(fileName: String): Properties {
     return res
 }
 
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        val reject = setOf("alpha", "beta", "rc", "dev")
+        reject.any { candidate.version.contains("-$it", ignoreCase = true) }
+    }
+}
+
+// `./gradlew dependencyUpdates` to see new dependency versions

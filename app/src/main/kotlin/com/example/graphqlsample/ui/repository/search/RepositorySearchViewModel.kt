@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.ApolloClient
-import com.example.graphqlsample.queries.SearchQuery
+import com.example.graphqlsample.graphql.SearchQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,53 +17,55 @@ class RepositorySearchViewModel @Inject constructor(
     apolloClient: ApolloClient,
 ) : AndroidViewModel(application) {
 
-    val uiModel: MutableStateFlow<RepositorySearchUiModel> =
-        MutableStateFlow(RepositorySearchUiModel.Loading)
+    val uiModel: MutableStateFlow<RepositorySearchUiModel> = MutableStateFlow(RepositorySearchUiModel.Loading)
 
     init {
         viewModelScope.launch {
-            try {
-                val searchResults: SearchQuery.Data = apolloClient
-                    .query(SearchQuery())
-                    .execute()
-                    .dataAssertNoErrors
+            val apolloResponse = apolloClient
+                .query(SearchQuery())
+                .execute()
 
+            val searchResults: SearchQuery.Data? = apolloResponse.data
+            if (searchResults != null) {
                 uiModel.value =
-                    RepositorySearchUiModel.Loaded(searchResults.search.edges.map { edge ->
-                        val searchResultRepositoryFields =
-                            edge!!.node.searchResultRepositoryFields!!
-                        val owner = searchResultRepositoryFields.owner
-                        val ownerType = if (owner.searchResultOrganizationFields != null) {
-                            RepositorySearchItemUiModel.OwnerType.ORGANIZATION
-                        } else {
-                            RepositorySearchItemUiModel.OwnerType.USER
-                        }
-                        RepositorySearchItemUiModel(
-                            name = searchResultRepositoryFields.name,
-                            ownerType = ownerType,
-                            ownerName = when (ownerType) {
-                                RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.name
-                                    ?: "(no name)"
-                                RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.searchResultOrganizationFields!!.name!!
-                            },
-                            ownerUserBio = when (ownerType) {
-                                RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.bio?.trim()
-                                    .takeIf { !it.isNullOrBlank() }
-                                RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> null
+                    RepositorySearchUiModel.Loaded(
+                        searchResults.search.edges.map { edge ->
+                            val searchResultRepositoryFields =
+                                edge!!.node.searchResultRepositoryFields!!
+                            val owner = searchResultRepositoryFields.owner
+                            val ownerType = if (owner.searchResultOrganizationFields != null) {
+                                RepositorySearchItemUiModel.OwnerType.ORGANIZATION
+                            } else {
+                                RepositorySearchItemUiModel.OwnerType.USER
                             }
-                        )
-                    }
+                            RepositorySearchItemUiModel(
+                                name = searchResultRepositoryFields.name,
+                                ownerType = ownerType,
+                                ownerName = when (ownerType) {
+                                    RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.name
+                                        ?: "(no name)"
+
+                                    RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> owner.searchResultOrganizationFields!!.name!!
+                                },
+                                ownerUserBio = when (ownerType) {
+                                    RepositorySearchItemUiModel.OwnerType.USER -> owner.searchResultUserFields!!.bio?.trim()
+                                        .takeIf { !it.isNullOrBlank() }
+
+                                    RepositorySearchItemUiModel.OwnerType.ORGANIZATION -> null
+                                }
+                            )
+                        }
                     )
-            } catch (e: Exception) {
-                Timber.w(e, "Could not fetch search results")
+            } else if (apolloResponse.exception != null) {
+                Timber.w(apolloResponse.exception, "Could not fetch search results")
                 uiModel.value = RepositorySearchUiModel.Error
             }
         }
     }
 
     sealed interface RepositorySearchUiModel {
-        object Loading : RepositorySearchUiModel
-        object Error : RepositorySearchUiModel
+        data object Loading : RepositorySearchUiModel
+        data object Error : RepositorySearchUiModel
         data class Loaded(
             val repositorySearchItemList: List<RepositorySearchItemUiModel>,
         ) : RepositorySearchUiModel

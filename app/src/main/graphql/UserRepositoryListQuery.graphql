@@ -16,6 +16,7 @@ query UserRepositoryListQuery($userLogin: String!, $first: Int!, $after: String)
 }
 
 fragment repositoryFields on Repository {
+  id
   name
   description
   stargazers(first: 0) {

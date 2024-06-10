@@ -1,0 +1,61 @@
+[versions]
+benManes-versions = "0.51.0"
+kotlin = "2.0.0"
+hilt = "2.51.1"
+agp = "8.4.1"
+androidx-test-ext-junit = "1.1.5"
+androidx-test-espresso = "3.4.1"
+kotlinx-coroutines = "1.8.1"
+androidx-appcompat = "1.7.0"
+androidx-core = "1.13.1"
+androidx-lifecycle-extensions = "2.2.0"
+androidx-lifecycle = "2.5.1"
+androidx-paging = "3.3.0"
+androidx-activity = "1.9.0"
+# See https://developer.android.com/jetpack/compose/bom/bom-mapping
+composeBom = "2024.05.00"
+androidx-paging-compose = "1.0.0-alpha17"
+androidx-lifecycle-viewmodel-compose = "2.8.1"
+androidx-navigation = "2.7.7"
+apollo = "4.0.0-beta.7"
+jakewharton-timber = "5.0.1"
+androidx-hilt-navigation-compose = "1.2.0"
+junit-junit = "4.13.2"
+
+[plugins]
+benManes-versions = { id = "com.github.ben-manes.versions", version.ref = "benManes-versions" }
+
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+
+[libraries]
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "androidx-lifecycle-extensions" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "androidx-paging" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
+
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+
+lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-viewmodel-compose" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidx-paging-compose" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
+apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+apollo-normalized-cache-sqlite = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "jakewharton-timber" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
+junit-junit = { group = "junit", name = "junit", version.ref = "junit-junit" }

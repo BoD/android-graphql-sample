@@ -51,7 +51,7 @@ fun RepositorySearchLayout(viewModel: RepositorySearchViewModel) {
     RepositorySearchLayoutContent(uiModel)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 private fun RepositorySearchLayoutContent(uiModel: RepositorySearchUiModel) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -64,7 +64,8 @@ private fun RepositorySearchLayoutContent(uiModel: RepositorySearchUiModel) {
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Crossfade(
             uiModel is RepositorySearchUiModel.Loading,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            label = "loading",
         ) { isLoading ->
             if (isLoading) {
                 FullScreenLoading()

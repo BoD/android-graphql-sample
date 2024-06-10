@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -32,7 +31,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
+import androidx.paging.compose.itemKey
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
@@ -44,11 +43,9 @@ fun RepositoryListLayout(viewModel: RepositoryListViewModel) {
     RepositoryListLayoutContent(viewModel.pagingDataflow)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRepositoryItemUiModel>>) {
-    val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> =
-        repositoryList.collectAsLazyPagingItems()
+    val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> = repositoryList.collectAsLazyPagingItems()
     val state = lazyRepositoryItems.loadState
     val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
 
@@ -76,8 +73,11 @@ private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRe
 @Composable
 private fun Loaded(lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel>) {
     LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-        items(lazyRepositoryItems) { repository ->
-            when (repository) {
+        items(
+            count = lazyRepositoryItems.itemCount,
+            key = lazyRepositoryItems.itemKey { it.id },
+        ) { index ->
+            when (val repository = lazyRepositoryItems[index]) {
                 is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
                 null -> PlaceholderRepositoryItem()
             }
