@@ -18,10 +18,7 @@ Either, manually:
 Or using Apollo's gradle task:
 
 ```shell
-./gradlew :app:downloadApolloSchema \
---endpoint='https://api.github.com/graphql' \
---schema='app/src/main/graphql/com/example/graphqlsample/queries/schema.graphqls'  \
---header="Authorization: Bearer <your token>"
+./gradlew downloadGithubApolloSchemaFromIntrospection
 ```
 
 (replace `<your token>` by the token you got from Github)
@@ -65,10 +62,9 @@ Demonstrates mutations and error handling (see `AddCommentToIssueMutation.graphq
 
 ## Useful links
 
-- [GraphQL spec](https://graphql.github.io/graphql-spec/June2018/#)
+- [GraphQL spec](https://spec.graphql.org/)
 - [Intro to GraphQL](https://graphql.org/learn/)
 - [Apollo Kotlin README](https://github.com/apollographql/apollo-kotlin)
-- [Medium article about Apollo Android coroutines extensions](https://medium.com/dailymotion/consume-your-graphql-api-with-kotlin-coroutines-8dcf716712b2)
 - [Github GraphQL API doc](https://developer.github.com/v4/)
 - [Github GraphQL Explorer](https://developer.github.com/v4/explorer/) ([More info](https://developer.github.com/v4/guides/using-the-explorer/))
 - [GraphQL pagination](https://graphql.org/learn/pagination/)
