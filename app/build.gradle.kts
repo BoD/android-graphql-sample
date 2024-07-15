@@ -48,6 +48,7 @@ android {
 dependencies {
     // Kotlin
     implementation(libs.kotlinx.coroutines.android)
+    implementation(platform(libs.kotlin.bom))
 
     // AndroidX
     implementation(libs.appcompat)

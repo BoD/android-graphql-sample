@@ -2,9 +2,9 @@ package com.example.graphqlsample.api.apollo
 
 import android.content.Context
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo.cache.normalized.normalizedCache
-import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.cache.normalized.normalizedCache
+import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.example.graphqlsample.BuildConfig
 import dagger.Module
 import dagger.Provides
