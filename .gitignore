@@ -9,3 +9,4 @@ captures
 .cxx
 build.properties
 .graphqlconfig
+.kotlin

@@ -3,7 +3,7 @@ package com.example.graphqlsample.ui.misc
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.graphql.AddCommentToIssueMutation
 import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
 import dagger.hilt.android.lifecycle.HiltViewModel

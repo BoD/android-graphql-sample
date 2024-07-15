@@ -9,7 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.R
 import com.example.graphqlsample.api.repository.RepositoryPagingSource
 import com.example.graphqlsample.ui.navigation.NavigationArguments

@@ -3,7 +3,7 @@ package com.example.graphqlsample.ui.viewer.info
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.R
 import com.example.graphqlsample.graphql.ViewerInfoQuery
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
