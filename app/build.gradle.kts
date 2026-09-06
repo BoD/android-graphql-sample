@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.extensions)
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.paging.runtime.ktx)
 
     // Compose
     implementation(libs.activity.compose)
