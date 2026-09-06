@@ -1,7 +1,7 @@
 package com.example.graphqlsample.ui.viewer.info
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.R
@@ -17,9 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewerInfoViewModel @Inject constructor(
-    application: Application,
+  private val application: Application,
     apolloClient: ApolloClient,
-) : AndroidViewModel(application) {
+) : ViewModel() {
     val uiModel: MutableStateFlow<ViewerInfoUiModel> = MutableStateFlow(ViewerInfoUiModel.Loading)
 
     init {
@@ -33,11 +33,11 @@ class ViewerInfoViewModel @Inject constructor(
                 val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()
                 repositoryUiModelList += viewerInfo.viewer.repositories.nodes!!.map { note ->
                     SimpleRepositoryItemUiModel(
-                        note!!.id,
-                        note.name,
-                        note.description
-                            ?: getApplication<Application>().getString(R.string.repository_noDescription),
-                        note.stargazers.totalCount.toString()
+                      note!!.id,
+                      note.name,
+                      note.description
+                        ?: application.getString(R.string.repository_noDescription),
+                      note.stargazers.totalCount.toString(),
                     )
                 }
                 if (viewerInfo.viewer.repositories.totalCount > 10) {
