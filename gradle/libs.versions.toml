@@ -1,8 +1,9 @@
 [versions]
 benManes-versions = "0.51.0"
-kotlin = "2.0.0"
-hilt = "2.51.1"
-agp = "8.4.2"
+kotlin = "2.2.10"
+ksp = "2.3.11"
+hilt = "2.60.1"
+agp = "9.4.0"
 androidx-test-ext-junit = "1.1.5"
 androidx-test-espresso = "3.4.1"
 kotlinx-coroutines = "1.8.1"
@@ -29,7 +30,7 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 
 [libraries]

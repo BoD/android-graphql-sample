@@ -1,26 +1,29 @@
-import java.util.Properties
+fun prop(key: String) = project.findProperty(key).toString()
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.apollo)
 }
 
 android {
     namespace = "com.example.graphqlsample"
-    compileSdk = 34
+    compileSdk {
+        version = release(36) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
-        buildConfigField("String", "GITHUB_OAUTH_KEY", "\"$githubOauthKey\"")
+        buildConfigField("String", "GITHUB_OAUTH_KEY", "\"${prop("githubOauthKey")}\"")
     }
 
     buildTypes {
@@ -31,12 +34,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -77,7 +76,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
 
 
@@ -85,11 +84,6 @@ dependencies {
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
-}
-
-kapt {
-    // Needed for Hilt - see https://developer.android.com/training/dependency-injection/hilt-android#kts
-    correctErrorTypes = true
 }
 
 apollo {
@@ -100,8 +94,7 @@ apollo {
         introspection {
             endpointUrl.set("https://api.github.com/graphql")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
-            val githubOauthKey = (rootProject.ext["buildProperties"] as Properties)["githubOauthKey"]
-            headers.put("Authorization", "Bearer $githubOauthKey")
+            headers.put("Authorization", "Bearer ${prop("githubOauthKey")}")
         }
     }
 }
