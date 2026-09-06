@@ -12,9 +12,7 @@ plugins {
 android {
     namespace = "com.example.graphqlsample"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+      version = release(37)
     }
 
     defaultConfig {
@@ -69,7 +67,6 @@ dependencies {
 
     // Apollo
     implementation(libs.apollo.runtime)
-    implementation(libs.apollo.normalized.cache.sqlite)
 
     // Timber
     implementation(libs.timber)
