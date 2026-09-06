@@ -8,7 +8,7 @@ query ViewerInfoQuery {
         email
 
         repositories(first: 10) {
-            nodes @nonnull {
+            nodes {
                 id
                 name
                 description

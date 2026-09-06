@@ -18,7 +18,7 @@ fragment searchResultRepositoryFields on Repository {
 
 query SearchQuery {
     search(query: "foo", type: REPOSITORY, first: 100) {
-        edges @nonnull {
+        edges {
             cursor
             textMatches {
                 property
@@ -29,7 +29,7 @@ query SearchQuery {
                     text
                 }
             }
-            node @nonnull {
+            node {
                 __typename
                 ...searchResultRepositoryFields
             }

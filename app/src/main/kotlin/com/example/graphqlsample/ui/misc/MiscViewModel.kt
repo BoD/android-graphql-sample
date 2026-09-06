@@ -31,7 +31,7 @@ class MiscViewModel @Inject constructor(
         ).execute()
         val data = apolloResponse.data
         if (data != null) {
-            val returnedSubjectId: String = data.addComment!!.subject.id
+            val returnedSubjectId: String = data.addComment!!.subject!!.id
             Timber.i("returnedSubjectId=$returnedSubjectId")
             uiModel.value = MiscUiModel(isLoading = false, status = Status.Success)
         } else if (apolloResponse.exception != null) {

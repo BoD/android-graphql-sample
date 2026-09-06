@@ -31,10 +31,10 @@ class RepositoryPagingSource(
                     .execute()
                     .dataAssertNoErrors
 
-            val data = userRepositoryList.user.repositories.edges
-            loadedItems += data.size
+            val data = userRepositoryList.user!!.repositories.edges
+            loadedItems += data!!.size
             return LoadResult.Page(
-                data = data.map { it!!.node },
+                data = data.map { it!!.node }.map { it!! },
                 prevKey = null,
                 nextKey = data.lastOrNull()?.cursor,
                 itemsAfter = userRepositoryList.user.repositories.totalCount - loadedItems,

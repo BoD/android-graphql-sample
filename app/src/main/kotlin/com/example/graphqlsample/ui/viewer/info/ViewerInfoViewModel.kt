@@ -31,7 +31,7 @@ class ViewerInfoViewModel @Inject constructor(
             val viewerInfo: ViewerInfoQuery.Data? = apolloResponse.data
             if (viewerInfo != null) {
                 val repositoryUiModelList = mutableListOf<RepositoryItemUiModel>()
-                repositoryUiModelList += viewerInfo.viewer.repositories.nodes.map { note ->
+                repositoryUiModelList += viewerInfo.viewer.repositories.nodes!!.map { note ->
                     SimpleRepositoryItemUiModel(
                         note!!.id,
                         note.name,

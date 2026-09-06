@@ -29,9 +29,9 @@ class RepositorySearchViewModel @Inject constructor(
             if (searchResults != null) {
                 uiModel.value =
                     RepositorySearchUiModel.Loaded(
-                        searchResults.search.edges.map { edge ->
+                        searchResults.search.edges!!.map { edge ->
                             val searchResultRepositoryFields =
-                                edge!!.node.searchResultRepositoryFields!!
+                                edge!!.node!!.searchResultRepositoryFields!!
                             val owner = searchResultRepositoryFields.owner
                             val ownerType = if (owner.searchResultOrganizationFields != null) {
                                 RepositorySearchItemUiModel.OwnerType.ORGANIZATION
