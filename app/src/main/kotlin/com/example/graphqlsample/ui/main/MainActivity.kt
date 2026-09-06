@@ -20,39 +20,39 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            val navController = rememberNavController()
-            MainLayout(
-                onMenuSearchClick = { navController.navigate(NavigationDestinations.REPOSITORY_SEARCH.name) },
-                onMenuMiscClick = { navController.navigate(NavigationDestinations.MISC.name) },
-            ) {
-                MainNavHost(navController)
-            }
-        }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      val navController = rememberNavController()
+      MainLayout(
+        onMenuSearchClick = { navController.navigate(NavigationDestinations.REPOSITORY_SEARCH.name) },
+        onMenuMiscClick = { navController.navigate(NavigationDestinations.MISC.name) },
+      ) {
+        MainNavHost(navController)
+      }
     }
+  }
 
-    @Composable
-    private fun MainNavHost(navController: NavHostController) {
-        NavHost(navController, startDestination = NavigationDestinations.VIEWER_INFO.name) {
-            composable(route = NavigationDestinations.VIEWER_INFO.name) { navBackStackEntry ->
-                ViewerInfoLayout(
-                    viewModel = hiltViewModel(navBackStackEntry),
-                    onSeeMoreClick = { login ->
-                        navController.navigate(route = "${NavigationDestinations.REPOSITORY_LIST.name}/$login")
-                    }
-                )
-            }
-            composable(route = NavigationDestinations.MISC.name) { navBackStackEntry ->
-                MiscLayout(viewModel = hiltViewModel(navBackStackEntry))
-            }
-            composable(route = NavigationDestinations.REPOSITORY_SEARCH.name) { navBackStackEntry ->
-                RepositorySearchLayout(viewModel = hiltViewModel(navBackStackEntry))
-            }
-            composable(route = "${NavigationDestinations.REPOSITORY_LIST.name}/{${NavigationArguments.USER_LOGIN}}") { navBackStackEntry ->
-                RepositoryListLayout(viewModel = hiltViewModel(navBackStackEntry))
-            }
-        }
+  @Composable
+  private fun MainNavHost(navController: NavHostController) {
+    NavHost(navController, startDestination = NavigationDestinations.VIEWER_INFO.name) {
+      composable(route = NavigationDestinations.VIEWER_INFO.name) { navBackStackEntry ->
+        ViewerInfoLayout(
+          viewModel = hiltViewModel(navBackStackEntry),
+          onSeeMoreClick = { login ->
+            navController.navigate(route = "${NavigationDestinations.REPOSITORY_LIST.name}/$login")
+          },
+        )
+      }
+      composable(route = NavigationDestinations.MISC.name) { navBackStackEntry ->
+        MiscLayout(viewModel = hiltViewModel(navBackStackEntry))
+      }
+      composable(route = NavigationDestinations.REPOSITORY_SEARCH.name) { navBackStackEntry ->
+        RepositorySearchLayout(viewModel = hiltViewModel(navBackStackEntry))
+      }
+      composable(route = "${NavigationDestinations.REPOSITORY_LIST.name}/{${NavigationArguments.USER_LOGIN}}") { navBackStackEntry ->
+        RepositoryListLayout(viewModel = hiltViewModel(navBackStackEntry))
+      }
     }
+  }
 }

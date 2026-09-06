@@ -2,21 +2,21 @@
 # See https://developer.github.com/v4/object/user/
 #
 query ViewerInfoQuery {
-    viewer {
-        login
-        name
-        email
+  viewer {
+    login
+    name
+    email
 
-        repositories(first: 10) {
-            nodes {
-                id
-                name
-                description
-                stargazers(first: 0) {
-                    totalCount
-                }
-            }
-            totalCount
+    repositories(first: 10) {
+      nodes {
+        id
+        name
+        description
+        stargazers(first: 0) {
+          totalCount
         }
+      }
+      totalCount
     }
+  }
 }

@@ -13,19 +13,19 @@ import com.example.graphqlsample.R
 
 @Composable
 fun RepositoryItem(repository: SimpleRepositoryItemUiModel) {
-    ListItem(
-        headlineContent = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(modifier = Modifier.weight(1F), text = repository.name)
-                Text(text = repository.stars, style = MaterialTheme.typography.bodyMedium)
-                Icon(
-                    painter = painterResource(R.drawable.ic_star_black_16dp),
-                    contentDescription = null
-                )
-            }
-        },
-        supportingContent = {
-            Text(repository.description)
-        }
-    )
+  ListItem(
+    headlineContent = {
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(modifier = Modifier.weight(1F), text = repository.name)
+        Text(text = repository.stars, style = MaterialTheme.typography.bodyMedium)
+        Icon(
+          painter = painterResource(R.drawable.ic_star_black_16dp),
+          contentDescription = null,
+        )
+      }
+    },
+    supportingContent = {
+      Text(repository.description)
+    },
+  )
 }

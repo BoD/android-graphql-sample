@@ -7,8 +7,8 @@ import timber.log.Timber.DebugTree
 
 @HiltAndroidApp
 class Application : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        Timber.plant(DebugTree())
-    }
+  override fun onCreate() {
+    super.onCreate()
+    Timber.plant(DebugTree())
+  }
 }
