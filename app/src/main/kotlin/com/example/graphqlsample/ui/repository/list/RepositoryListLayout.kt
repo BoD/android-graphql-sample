@@ -57,10 +57,12 @@ private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRe
   val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
 
   val snackbarHostState = remember { SnackbarHostState() }
-  if (isError) {
-    val message = stringResource(R.string.error_generic)
-    LaunchedEffect(snackbarHostState) {
-      snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
+  val snackbarMessage = stringResource(R.string.error_generic)
+  LaunchedEffect(isError) {
+    if (isError) {
+      snackbarHostState.showSnackbar(snackbarMessage, duration = SnackbarDuration.Indefinite)
+    } else {
+      snackbarHostState.currentSnackbarData?.dismiss()
     }
   }
   Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->

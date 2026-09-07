@@ -24,7 +24,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchItemUiModel
@@ -48,7 +48,7 @@ import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.
 @Composable
 fun RepositorySearchLayout() {
   val viewModel: RepositorySearchViewModel = hiltViewModel()
-  val uiModel by viewModel.uiModel.collectAsState()
+  val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
   RepositorySearchLayoutContent(uiModel)
 }
 
@@ -56,10 +56,12 @@ fun RepositorySearchLayout() {
 @Composable
 private fun RepositorySearchLayoutContent(uiModel: RepositorySearchUiModel) {
   val snackbarHostState = remember { SnackbarHostState() }
-  if (uiModel is RepositorySearchUiModel.Error) {
-    val message = stringResource(R.string.error_generic)
-    LaunchedEffect(snackbarHostState) {
-      snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
+  val snackbarMessage = stringResource(R.string.error_generic)
+  LaunchedEffect(uiModel) {
+    if (uiModel is RepositorySearchUiModel.Error) {
+      snackbarHostState.showSnackbar(snackbarMessage, duration = SnackbarDuration.Indefinite)
+    } else {
+      snackbarHostState.currentSnackbarData?.dismiss()
     }
   }
   Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->

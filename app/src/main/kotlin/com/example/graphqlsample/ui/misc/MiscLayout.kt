@@ -15,7 +15,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,13 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 
 @Composable
 fun MiscLayout() {
   val viewModel: MiscViewModel = hiltViewModel()
-  val uiModel by viewModel.uiModel.collectAsState()
+  val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
   MiscLayoutContent(uiModel, viewModel::addCommentToIssue, viewModel::handleErrorResult)
 }
 
@@ -41,22 +41,23 @@ private fun MiscLayoutContent(
   handleErrorResult: () -> Unit,
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
-  when (uiModel.status) {
-    MiscViewModel.MiscUiModel.Status.Success -> {
-      val message = stringResource(R.string.success)
-      LaunchedEffect(snackbarHostState) {
-        snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-      }
-    }
+  val snackbarMessage = when (uiModel.status) {
+    MiscViewModel.MiscUiModel.Status.Success -> stringResource(R.string.success)
+    is MiscViewModel.MiscUiModel.Status.Error -> stringResource(
+      R.string.error_withInfo,
+      uiModel.status.message,
+    )
 
-    is MiscViewModel.MiscUiModel.Status.Error -> {
-      val message = stringResource(R.string.error_withInfo, uiModel.status.message)
-      LaunchedEffect(snackbarHostState) {
-        snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-      }
+    MiscViewModel.MiscUiModel.Status.Idle -> ""
+  }
+  LaunchedEffect(uiModel) {
+    if (!uiModel.isLoading && (uiModel.status == MiscViewModel.MiscUiModel.Status.Success ||
+        uiModel.status is MiscViewModel.MiscUiModel.Status.Error)
+    ) {
+      snackbarHostState.showSnackbar(snackbarMessage, duration = SnackbarDuration.Indefinite)
+    } else {
+      snackbarHostState.currentSnackbarData?.dismiss()
     }
-
-    MiscViewModel.MiscUiModel.Status.Idle -> Unit
   }
 
   Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->

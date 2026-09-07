@@ -63,10 +63,12 @@ fun ViewerInfoLayout(
 @Composable
 private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
   val snackbarHostState = remember { SnackbarHostState() }
-  if (uiModel is Error) {
-    val message = stringResource(R.string.error_generic)
-    LaunchedEffect(snackbarHostState) {
-      snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
+  val snackbarMessage = stringResource(R.string.error_generic)
+  LaunchedEffect(uiModel) {
+    if (uiModel is Error) {
+      snackbarHostState.showSnackbar(snackbarMessage, duration = SnackbarDuration.Indefinite)
+    } else {
+      snackbarHostState.currentSnackbarData?.dismiss()
     }
   }
   Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
