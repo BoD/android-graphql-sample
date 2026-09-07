@@ -3,6 +3,7 @@ package com.example.graphqlsample.ui.repository.list
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -10,7 +11,8 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.R
-import com.example.graphqlsample.data.remote.repository.RepositoryPagingSource
+import com.example.graphqlsample.data.RepositoryRemoteMediator
+import com.example.graphqlsample.data.local.AppDatabase
 import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import dagger.assisted.Assisted
@@ -24,28 +26,32 @@ import kotlinx.coroutines.flow.map
 class RepositoryListViewModel @AssistedInject constructor(
   private val application: Application,
   apolloClient: ApolloClient,
+  private val appDatabase: AppDatabase,
   @Assisted val destination: Destination.RepositoryList,
 ) : ViewModel() {
 
+  @OptIn(ExperimentalPagingApi::class)
   val pagingDataflow: Flow<PagingData<SimpleRepositoryItemUiModel>> =
     Pager(
       config = PagingConfig(pageSize = PAGE_SIZE),
+      remoteMediator = RepositoryRemoteMediator(
+        userLogin = destination.userLogin,
+        apolloClient = apolloClient,
+        database = appDatabase,
+      ),
       pagingSourceFactory = {
-        RepositoryPagingSource(
-          userLogin = destination.userLogin,
-          apolloClient = apolloClient,
-        )
+        appDatabase.repositoryDao().pagingSource()
       },
     )
       .flow
       .map { data ->
         data.map { item ->
           SimpleRepositoryItemUiModel(
-            id = item.repositoryFields.id,
-            name = item.repositoryFields.name,
-            description = item.repositoryFields.description
+            id = item.id,
+            name = item.name,
+            description = item.description
               ?: application.getString(R.string.repository_noDescription),
-            stars = item.repositoryFields.stargazers.totalCount.toString(),
+            stars = item.stars.toString(),
           )
         }
       }
@@ -57,6 +63,6 @@ class RepositoryListViewModel @AssistedInject constructor(
   }
 
   companion object {
-    private const val PAGE_SIZE = 10
+    private const val PAGE_SIZE = 15
   }
 }
