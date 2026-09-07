@@ -28,12 +28,16 @@ class RepositoryListViewModel @AssistedInject constructor(
 ) : ViewModel() {
 
   val pagingDataflow: Flow<PagingData<SimpleRepositoryItemUiModel>> =
-    Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-      RepositoryPagingSource(
-        userLogin = destination.userLogin,
-        apolloClient = apolloClient,
-      )
-    }.flow
+    Pager(
+      config = PagingConfig(pageSize = PAGE_SIZE),
+      pagingSourceFactory = {
+        RepositoryPagingSource(
+          userLogin = destination.userLogin,
+          apolloClient = apolloClient,
+        )
+      },
+    )
+      .flow
       .map { data ->
         data.map { item ->
           SimpleRepositoryItemUiModel(
