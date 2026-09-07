@@ -23,6 +23,7 @@ apollo = "5.1.0"
 jakewharton-timber = "5.0.1"
 androidx-hilt-navigation-compose = "1.4.0"
 junit-junit = "4.13.2"
+room = "3.0.2"
 
 [plugins]
 benManes-versions = { id = "io.github.ben-manes.versions", version.ref = "benManes-versions" }
@@ -62,3 +63,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "jak
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit-junit" }
+
+room-runtime = { group = "androidx.room3", name = "room3-runtime", version.ref = "room" }
+room-paging = { group = "androidx.room3", name = "room3-paging", version.ref = "room" }
+room-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room" }
