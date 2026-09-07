@@ -23,7 +23,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
@@ -45,10 +46,10 @@ import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUi
 
 @Composable
 fun ViewerInfoLayout(
-  viewModel: ViewerInfoViewModel,
   onSeeMoreClick: (String) -> Unit,
 ) {
-  val uiModel by viewModel.uiModel.collectAsState()
+  val viewModel: ViewerInfoViewModel = hiltViewModel()
+  val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
   ViewerInfoLayoutContent(
     uiModel = uiModel,
     onSeeMoreClick = {

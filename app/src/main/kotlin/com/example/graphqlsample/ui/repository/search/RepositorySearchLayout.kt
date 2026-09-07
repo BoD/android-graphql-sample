@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchItemUiModel
@@ -45,7 +46,8 @@ import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchUiModel
 
 @Composable
-fun RepositorySearchLayout(viewModel: RepositorySearchViewModel) {
+fun RepositorySearchLayout() {
+  val viewModel: RepositorySearchViewModel = hiltViewModel()
   val uiModel by viewModel.uiModel.collectAsState()
   RepositorySearchLayoutContent(uiModel)
 }

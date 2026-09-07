@@ -27,6 +27,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -34,12 +35,18 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
+import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RepositoryListLayout(viewModel: RepositoryListViewModel) {
+fun RepositoryListLayout(destination: Destination.RepositoryList) {
+  val viewModel: RepositoryListViewModel = hiltViewModel<_, RepositoryListViewModel.Factory>(
+    creationCallback = { factory ->
+      factory.create(destination)
+    },
+  )
   RepositoryListLayoutContent(viewModel.pagingDataflow)
 }
 

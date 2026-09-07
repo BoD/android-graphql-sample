@@ -4,14 +4,15 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.example.graphqlsample.ui.misc.MiscLayout
-import com.example.graphqlsample.ui.navigation.NavigationArguments
-import com.example.graphqlsample.ui.navigation.NavigationDestinations
+import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.list.RepositoryListLayout
 import com.example.graphqlsample.ui.repository.search.RepositorySearchLayout
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoLayout
@@ -23,36 +24,44 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
-      val navController = rememberNavController()
+      val backStack = rememberNavBackStack(Destination.ViewerInfo)
+
       MainLayout(
-        onMenuSearchClick = { navController.navigate(NavigationDestinations.REPOSITORY_SEARCH.name) },
-        onMenuMiscClick = { navController.navigate(NavigationDestinations.MISC.name) },
+        onMenuSearchClick = { backStack.add(Destination.RepositorySearch) },
+        onMenuMiscClick = { backStack.add(Destination.Misc) },
       ) {
-        MainNavHost(navController)
+        MainNavHost(backStack)
       }
     }
   }
 
   @Composable
-  private fun MainNavHost(navController: NavHostController) {
-    NavHost(navController, startDestination = NavigationDestinations.VIEWER_INFO.name) {
-      composable(route = NavigationDestinations.VIEWER_INFO.name) { navBackStackEntry ->
-        ViewerInfoLayout(
-          viewModel = hiltViewModel(navBackStackEntry),
-          onSeeMoreClick = { login ->
-            navController.navigate(route = "${NavigationDestinations.REPOSITORY_LIST.name}/$login")
-          },
-        )
-      }
-      composable(route = NavigationDestinations.MISC.name) { navBackStackEntry ->
-        MiscLayout(viewModel = hiltViewModel(navBackStackEntry))
-      }
-      composable(route = NavigationDestinations.REPOSITORY_SEARCH.name) { navBackStackEntry ->
-        RepositorySearchLayout(viewModel = hiltViewModel(navBackStackEntry))
-      }
-      composable(route = "${NavigationDestinations.REPOSITORY_LIST.name}/{${NavigationArguments.USER_LOGIN}}") { navBackStackEntry ->
-        RepositoryListLayout(viewModel = hiltViewModel(navBackStackEntry))
-      }
-    }
+  private fun MainNavHost(backStack: NavBackStack<NavKey>) {
+    NavDisplay(
+      backStack = backStack,
+      onBack = { backStack.removeLastOrNull() },
+      entryDecorators = listOf(
+        rememberSaveableStateHolderNavEntryDecorator(),
+        rememberViewModelStoreNavEntryDecorator(),
+      ),
+      entryProvider = entryProvider {
+        entry<Destination.ViewerInfo> {
+          ViewerInfoLayout(
+            onSeeMoreClick = { login ->
+              backStack.add(Destination.RepositoryList(login))
+            },
+          )
+        }
+        entry<Destination.Misc> {
+          MiscLayout()
+        }
+        entry<Destination.RepositorySearch> {
+          RepositorySearchLayout()
+        }
+        entry<Destination.RepositoryList> { key ->
+          RepositoryListLayout(key)
+        }
+      },
+    )
   }
 }

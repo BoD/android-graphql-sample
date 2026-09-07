@@ -7,6 +7,7 @@ agp = "9.4.0"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-espresso = "3.7.0"
 kotlinx-coroutines = "1.11.0"
+kotlinx-serialization = "1.9.0"
 androidx-appcompat = "1.8.0"
 androidx-core = "1.19.0"
 androidx-lifecycle-extensions = "2.2.0"
@@ -16,7 +17,8 @@ androidx-activity = "1.13.0"
 # See https://developer.android.com/jetpack/compose/bom/bom-mapping
 composeBom = "2026.08.00"
 androidx-lifecycle-viewmodel-compose = "2.8.1"
-androidx-navigation = "2.7.7"
+androidx-lifecycle-viewmodel-navigation3 = "2.11.0"
+androidx-navigation3 = "1.1.6"
 apollo = "5.1.0"
 jakewharton-timber = "5.0.1"
 androidx-hilt-navigation-compose = "1.4.0"
@@ -26,6 +28,7 @@ junit-junit = "4.13.2"
 benManes-versions = { id = "io.github.ben-manes.versions", version.ref = "benManes-versions" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -50,7 +53,10 @@ androidx-compose-animation = { group = "androidx.compose.animation", name = "ani
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-viewmodel-compose" }
-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle-viewmodel-navigation3" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "androidx-navigation3" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "androidx-navigation3" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "jakewharton-timber" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
