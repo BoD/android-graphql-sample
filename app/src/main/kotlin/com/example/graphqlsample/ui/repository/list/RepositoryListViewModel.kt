@@ -10,7 +10,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.R
-import com.example.graphqlsample.api.repository.RepositoryPagingSource
+import com.example.graphqlsample.data.remote.repository.RepositoryPagingSource
 import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import dagger.assisted.Assisted

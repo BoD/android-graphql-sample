@@ -1,4 +1,4 @@
-package com.example.graphqlsample.api.repository
+package com.example.graphqlsample.data.remote.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
