@@ -15,19 +15,15 @@ import com.example.graphqlsample.data.RepositoryRemoteMediator
 import com.example.graphqlsample.data.local.AppDatabase
 import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.InjectedParam
 
-@HiltViewModel(assistedFactory = RepositoryListViewModel.Factory::class)
-class RepositoryListViewModel @AssistedInject constructor(
+class RepositoryListViewModel(
   private val application: Application,
   apolloClient: ApolloClient,
   private val appDatabase: AppDatabase,
-  @Assisted val destination: Destination.RepositoryList,
+  @InjectedParam val destination: Destination.RepositoryList,
 ) : ViewModel() {
 
   @OptIn(ExperimentalPagingApi::class)
@@ -56,11 +52,6 @@ class RepositoryListViewModel @AssistedInject constructor(
         }
       }
       .cachedIn(viewModelScope)
-
-  @AssistedFactory
-  interface Factory {
-    fun create(destination: Destination.RepositoryList): RepositoryListViewModel
-  }
 
   companion object {
     private const val PAGE_SIZE = 15

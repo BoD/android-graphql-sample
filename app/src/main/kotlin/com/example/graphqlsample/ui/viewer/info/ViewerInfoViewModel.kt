@@ -9,14 +9,11 @@ import com.example.graphqlsample.graphql.ViewerInfoQuery
 import com.example.graphqlsample.ui.repository.item.RepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SeeMoreRepositoryItemUiModel
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class ViewerInfoViewModel @Inject constructor(
+class ViewerInfoViewModel(
   private val application: Application,
   apolloClient: ApolloClient,
 ) : ViewModel() {

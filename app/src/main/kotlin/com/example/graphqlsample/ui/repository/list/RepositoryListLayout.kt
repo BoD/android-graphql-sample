@@ -27,7 +27,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -39,14 +38,12 @@ import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import kotlinx.coroutines.flow.Flow
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun RepositoryListLayout(destination: Destination.RepositoryList) {
-  val viewModel: RepositoryListViewModel = hiltViewModel<_, RepositoryListViewModel.Factory>(
-    creationCallback = { factory ->
-      factory.create(destination)
-    },
-  )
+  val viewModel: RepositoryListViewModel = koinViewModel { parametersOf(destination) }
   RepositoryListLayoutContent(viewModel.pagingDataflow)
 }
 

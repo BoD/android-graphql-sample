@@ -7,9 +7,9 @@ plugins {
   alias(libs.plugins.kotlinAndroid)
   alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.compose.compiler)
-  alias(libs.plugins.hilt)
   alias(libs.plugins.ksp)
   alias(libs.plugins.apollo)
+  alias(libs.plugins.koin.compiler)
 }
 
 android {
@@ -56,10 +56,6 @@ dependencies {
   // Kotlin
   implementation(libs.kotlinx.coroutines.android)
 
-  // Hilt
-  implementation(libs.hilt.android)
-  ksp(libs.hilt.android.compiler)
-
   // AndroidX
   implementation(libs.appcompat)
   implementation(libs.core.ktx)
@@ -82,7 +78,6 @@ dependencies {
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
   implementation(libs.kotlinx.serialization.json)
-  implementation(libs.hilt.navigation.compose)
 
   // Apollo
   implementation(libs.apollo.runtime)
@@ -99,6 +94,12 @@ dependencies {
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)
+
+  // Koin
+  implementation(platform(libs.koin.bom))
+  implementation(libs.koin.android)
+  implementation(libs.koin.androidx.compose)
+  implementation(libs.koin.annotations)
 }
 
 apollo {
@@ -112,6 +113,10 @@ apollo {
       headers.put("Authorization", "Bearer ${prop("githubOauthKey")}")
     }
   }
+}
+
+koinCompiler {
+  userLogs = true
 }
 
 // `./gradlew downloadGithubApolloSchemaFromIntrospection` to download the schema

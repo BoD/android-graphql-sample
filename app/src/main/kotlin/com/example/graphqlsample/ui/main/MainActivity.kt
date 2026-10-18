@@ -16,9 +16,7 @@ import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.list.RepositoryListLayout
 import com.example.graphqlsample.ui.repository.search.RepositorySearchLayout
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoLayout
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {

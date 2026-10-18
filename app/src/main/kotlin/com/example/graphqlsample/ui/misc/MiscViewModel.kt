@@ -5,15 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.graphql.AddCommentToIssueMutation
 import com.example.graphqlsample.ui.misc.MiscViewModel.MiscUiModel.Status
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
-import javax.inject.Inject
 
-@HiltViewModel
-class MiscViewModel @Inject constructor(
+class MiscViewModel(
   private val apolloClient: ApolloClient,
 ) : ViewModel() {
 

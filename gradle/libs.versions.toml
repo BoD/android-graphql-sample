@@ -1,7 +1,6 @@
 [versions]
 kotlin = "2.4.21"
 ksp = "2.3.12"
-hilt = "2.60.1"
 agp = "9.4.1"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-espresso = "3.7.0"
@@ -20,21 +19,21 @@ androidx-lifecycle-viewmodel-navigation3 = "2.11.0"
 androidx-navigation3 = "1.2.0"
 apollo = "5.2.0"
 jakewharton-timber = "5.0.1"
-androidx-hilt-navigation-compose = "1.4.0"
 junit = "4.13.2"
 room = "3.0.2"
+koin = "4.2.2"
+koin-plugin = "1.2.1"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
 [libraries]
-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -58,10 +57,13 @@ androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "jakewharton-timber" }
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 room-runtime = { group = "androidx.room3", name = "room3-runtime", version.ref = "room" }
 room-paging = { group = "androidx.room3", name = "room3-paging", version.ref = "room" }
 room-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room" }
+
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations" }

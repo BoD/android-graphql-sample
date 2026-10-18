@@ -4,14 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.graphql.SearchQuery
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class RepositorySearchViewModel @Inject constructor(
+class RepositorySearchViewModel(
   apolloClient: ApolloClient,
 ) : ViewModel() {
 

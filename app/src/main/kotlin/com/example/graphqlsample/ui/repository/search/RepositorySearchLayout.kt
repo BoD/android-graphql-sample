@@ -37,17 +37,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchItemUiModel
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchItemUiModel.OwnerType
 import com.example.graphqlsample.ui.repository.search.RepositorySearchViewModel.RepositorySearchUiModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RepositorySearchLayout() {
-  val viewModel: RepositorySearchViewModel = hiltViewModel()
+  val viewModel: RepositorySearchViewModel = koinViewModel()
   val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
   RepositorySearchLayoutContent(uiModel)
 }

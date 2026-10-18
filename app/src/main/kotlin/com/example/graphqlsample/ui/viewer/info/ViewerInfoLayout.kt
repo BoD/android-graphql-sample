@@ -31,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
@@ -43,12 +42,13 @@ import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUi
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Error
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loaded
 import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUiModel.Loading
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ViewerInfoLayout(
   onSeeMoreClick: (String) -> Unit,
 ) {
-  val viewModel: ViewerInfoViewModel = hiltViewModel()
+  val viewModel: ViewerInfoViewModel = koinViewModel()
   val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
   ViewerInfoLayoutContent(
     uiModel = uiModel,
