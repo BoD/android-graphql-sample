@@ -1,7 +1,9 @@
 *.iml
 .gradle
 local.properties
-.idea
+.idea/*
+!.idea/codeStyles
+!.idea/copyright
 .DS_Store
 build
 captures
@@ -10,3 +12,4 @@ captures
 build.properties
 .graphqlconfig
 .kotlin
+versions.properties

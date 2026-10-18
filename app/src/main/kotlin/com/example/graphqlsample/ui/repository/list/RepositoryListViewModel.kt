@@ -1,8 +1,7 @@
 package com.example.graphqlsample.ui.repository.list
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -12,41 +11,52 @@ import androidx.paging.map
 import com.apollographql.apollo.ApolloClient
 import com.example.graphqlsample.R
 import com.example.graphqlsample.api.repository.RepositoryPagingSource
-import com.example.graphqlsample.ui.navigation.NavigationArguments
+import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-@HiltViewModel
-class RepositoryListViewModel @Inject constructor(
-    application: Application,
-    apolloClient: ApolloClient,
-    savedStateHandle: SavedStateHandle,
-) : AndroidViewModel(application) {
+@HiltViewModel(assistedFactory = RepositoryListViewModel.Factory::class)
+class RepositoryListViewModel @AssistedInject constructor(
+  private val application: Application,
+  apolloClient: ApolloClient,
+  @Assisted val destination: Destination.RepositoryList,
+) : ViewModel() {
 
-    val pagingDataflow: Flow<PagingData<SimpleRepositoryItemUiModel>> =
-        Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-            RepositoryPagingSource(
-                userLogin = savedStateHandle.get<String>(NavigationArguments.USER_LOGIN)!!,
-                apolloClient = apolloClient
-            )
-        }.flow
-            .map { data ->
-                data.map { item ->
-                    SimpleRepositoryItemUiModel(
-                        id = item.repositoryFields.id,
-                        name = item.repositoryFields.name,
-                        description = item.repositoryFields.description
-                            ?: getApplication<Application>().getString(R.string.repository_noDescription),
-                        stars = item.repositoryFields.stargazers.totalCount.toString()
-                    )
-                }
-            }
-            .cachedIn(viewModelScope)
+  val pagingDataflow: Flow<PagingData<SimpleRepositoryItemUiModel>> =
+    Pager(
+      config = PagingConfig(pageSize = PAGE_SIZE),
+      pagingSourceFactory = {
+        RepositoryPagingSource(
+          userLogin = destination.userLogin,
+          apolloClient = apolloClient,
+        )
+      },
+    )
+      .flow
+      .map { data ->
+        data.map { item ->
+          SimpleRepositoryItemUiModel(
+            id = item.repositoryFields.id,
+            name = item.repositoryFields.name,
+            description = item.repositoryFields.description
+              ?: application.getString(R.string.repository_noDescription),
+            stars = item.repositoryFields.stargazers.totalCount.toString(),
+          )
+        }
+      }
+      .cachedIn(viewModelScope)
 
-    companion object {
-        private const val PAGE_SIZE = 10
-    }
+  @AssistedFactory
+  interface Factory {
+    fun create(destination: Destination.RepositoryList): RepositoryListViewModel
+  }
+
+  companion object {
+    private const val PAGE_SIZE = 10
+  }
 }

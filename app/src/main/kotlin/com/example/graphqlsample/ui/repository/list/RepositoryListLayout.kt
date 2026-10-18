@@ -27,6 +27,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -34,84 +35,91 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
+import com.example.graphqlsample.ui.navigation.Destination
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
 import com.example.graphqlsample.ui.repository.item.SimpleRepositoryItemUiModel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RepositoryListLayout(viewModel: RepositoryListViewModel) {
-    RepositoryListLayoutContent(viewModel.pagingDataflow)
+fun RepositoryListLayout(destination: Destination.RepositoryList) {
+  val viewModel: RepositoryListViewModel = hiltViewModel<_, RepositoryListViewModel.Factory>(
+    creationCallback = { factory ->
+      factory.create(destination)
+    },
+  )
+  RepositoryListLayoutContent(viewModel.pagingDataflow)
 }
 
 @Composable
 private fun RepositoryListLayoutContent(repositoryList: Flow<PagingData<SimpleRepositoryItemUiModel>>) {
-    val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> = repositoryList.collectAsLazyPagingItems()
-    val state = lazyRepositoryItems.loadState
-    val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
+  val lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel> = repositoryList.collectAsLazyPagingItems()
+  val state = lazyRepositoryItems.loadState
+  val isError = state.refresh is LoadState.Error || state.append is LoadState.Error
 
-    val snackbarHostState = remember { SnackbarHostState() }
+  val snackbarHostState = remember { SnackbarHostState() }
+  val snackbarMessage = stringResource(R.string.error_generic)
+  LaunchedEffect(isError) {
     if (isError) {
-        val message = stringResource(R.string.error_generic)
-        LaunchedEffect(snackbarHostState) {
-            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-        }
+      snackbarHostState.showSnackbar(snackbarMessage, duration = SnackbarDuration.Indefinite)
+    } else {
+      snackbarHostState.currentSnackbarData?.dismiss()
     }
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
-        Crossfade(
-            state.refresh is LoadState.Loading,
-            modifier = Modifier.padding(paddingValues)
-        ) { isLoading ->
-            if (isLoading) {
-                FullScreenLoading()
-            } else if (state.refresh is LoadState.NotLoading) {
-                Loaded(lazyRepositoryItems)
-            }
-        }
+  }
+  Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+    Crossfade(
+      state.refresh is LoadState.Loading,
+      modifier = Modifier.padding(paddingValues),
+    ) { isLoading ->
+      if (isLoading) {
+        FullScreenLoading()
+      } else if (state.refresh is LoadState.NotLoading) {
+        Loaded(lazyRepositoryItems)
+      }
     }
+  }
 }
 
 @Composable
 private fun Loaded(lazyRepositoryItems: LazyPagingItems<SimpleRepositoryItemUiModel>) {
-    LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-        items(
-            count = lazyRepositoryItems.itemCount,
-            key = lazyRepositoryItems.itemKey { it.id },
-        ) { index ->
-            when (val repository = lazyRepositoryItems[index]) {
-                is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
-                null -> PlaceholderRepositoryItem()
-            }
-        }
+  LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
+    items(
+      count = lazyRepositoryItems.itemCount,
+      key = lazyRepositoryItems.itemKey { it.id },
+    ) { index ->
+      when (val repository = lazyRepositoryItems[index]) {
+        is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
+        null -> PlaceholderRepositoryItem()
+      }
     }
+  }
 }
 
 @Composable
 private fun PlaceholderRepositoryItem() {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.Center
-
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.weight(1F)) {
-                Shim(Modifier.size(128.dp, 19.dp))
-            }
-            Shim(Modifier.size(24.dp, 15.dp))
-        }
-        Spacer(Modifier.size(4.dp))
-        Shim(Modifier.size(192.dp, 15.dp))
+  Column(
+    Modifier
+      .fillMaxWidth()
+      .height(64.dp)
+      .padding(horizontal = 16.dp),
+    verticalArrangement = Arrangement.Center,
+  ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Box(Modifier.weight(1F)) {
+        Shim(Modifier.size(128.dp, 19.dp))
+      }
+      Shim(Modifier.size(24.dp, 15.dp))
     }
+    Spacer(Modifier.size(4.dp))
+    Shim(Modifier.size(192.dp, 15.dp))
+  }
 }
 
 @Composable
 private fun Shim(modifier: Modifier) {
-    val color = MaterialTheme.colorScheme.onBackground.copy(alpha = .1F)
-    Canvas(modifier) {
-        drawRoundRect(color, size = size, cornerRadius = CornerRadius(size.height))
-    }
+  val color = MaterialTheme.colorScheme.onBackground.copy(alpha = .1F)
+  Canvas(modifier) {
+    drawRoundRect(color, size = size, cornerRadius = CornerRadius(size.height))
+  }
 }
 
 
@@ -120,5 +128,5 @@ private fun Shim(modifier: Modifier) {
 @Preview
 @Composable
 private fun EmptyRepositoryItemPreview() {
-    PlaceholderRepositoryItem()
+  PlaceholderRepositoryItem()
 }

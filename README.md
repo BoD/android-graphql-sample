@@ -8,7 +8,7 @@ The aim is to explore this library and GraphQL in general.
 
 👉 https://developer.github.com/v4/guides/forming-calls/#authenticating-with-graphql
 
-Then put it in `build.properties` (follow the sample in build.properties.SAMPLE).
+Then put it in `gradle.properties` with the key `githubOauthKey`.
 
 ## Get the GraphQL schema file
 
@@ -20,8 +20,6 @@ Or using Apollo's gradle task:
 ```shell
 ./gradlew downloadGithubApolloSchemaFromIntrospection
 ```
-
-(replace `<your token>` by the token you got from Github)
 
 ## Architecture of the project
 

@@ -23,7 +23,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.graphqlsample.R
 import com.example.graphqlsample.core.ui.FullScreenLoading
 import com.example.graphqlsample.ui.repository.item.RepositoryItem
@@ -45,99 +46,101 @@ import com.example.graphqlsample.ui.viewer.info.ViewerInfoViewModel.ViewerInfoUi
 
 @Composable
 fun ViewerInfoLayout(
-    viewModel: ViewerInfoViewModel,
-    onSeeMoreClick: (String) -> Unit
+  onSeeMoreClick: (String) -> Unit,
 ) {
-    val uiModel by viewModel.uiModel.collectAsState()
-    ViewerInfoLayoutContent(
-        uiModel = uiModel,
-        onSeeMoreClick = {
-            val login = (uiModel as Loaded).login
-            onSeeMoreClick(login)
-        }
-    )
+  val viewModel: ViewerInfoViewModel = hiltViewModel()
+  val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
+  ViewerInfoLayoutContent(
+    uiModel = uiModel,
+    onSeeMoreClick = {
+      val login = (uiModel as Loaded).login
+      onSeeMoreClick(login)
+    },
+  )
 }
 
 
 @Composable
 private fun ViewerInfoLayoutContent(uiModel: ViewerInfoUiModel, onSeeMoreClick: () -> Unit) {
-    val snackbarHostState = remember { SnackbarHostState() }
+  val snackbarHostState = remember { SnackbarHostState() }
+  val snackbarMessage = stringResource(R.string.error_generic)
+  LaunchedEffect(uiModel) {
     if (uiModel is Error) {
-        val message = stringResource(R.string.error_generic)
-        LaunchedEffect(snackbarHostState) {
-            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Indefinite)
-        }
+      snackbarHostState.showSnackbar(snackbarMessage, duration = SnackbarDuration.Indefinite)
+    } else {
+      snackbarHostState.currentSnackbarData?.dismiss()
     }
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
-        Crossfade(
-            uiModel is Loading,
-            modifier = Modifier.padding(paddingValues),
-            label = "loading",
-        ) { isLoading ->
-            if (isLoading) {
-                FullScreenLoading()
-            } else if (uiModel is Loaded) {
-                Loaded(uiModel, onSeeMoreClick)
-            }
-        }
+  }
+  Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+    Crossfade(
+      uiModel is Loading,
+      modifier = Modifier.padding(paddingValues),
+      label = "loading",
+    ) { isLoading ->
+      if (isLoading) {
+        FullScreenLoading()
+      } else if (uiModel is Loaded) {
+        Loaded(uiModel, onSeeMoreClick)
+      }
     }
+  }
 }
 
 @Composable
 private fun Loaded(uiModel: Loaded, onSeeMoreClick: () -> Unit) {
-    Column(Modifier.fillMaxSize()) {
-        UserInfo(uiModel)
-        RepositoryList(uiModel.repositoryItemList, onSeeMoreClick)
-    }
+  Column(Modifier.fillMaxSize()) {
+    UserInfo(uiModel)
+    RepositoryList(uiModel.repositoryItemList, onSeeMoreClick)
+  }
 }
 
 @Composable
 private fun UserInfo(uiModel: Loaded) {
-    Card(Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(4.dp)) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = uiModel.login, style = MaterialTheme.typography.headlineMedium)
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-                uiModel.name?.let { Text(text = it) }
-                Spacer(Modifier.height(4.dp))
-                Text(text = uiModel.email)
-            }
-        }
+  Card(Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(4.dp)) {
+    Row(
+      Modifier
+        .fillMaxWidth()
+        .padding(16.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Text(text = uiModel.login, style = MaterialTheme.typography.headlineMedium)
+      Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+        uiModel.name?.let { Text(text = it) }
+        Spacer(Modifier.height(4.dp))
+        Text(text = uiModel.email)
+      }
     }
+  }
 }
 
 @Composable
 private fun RepositoryList(
-    repositoryItemList: List<RepositoryItemUiModel>,
-    onSeeMoreClick: () -> Unit
+  repositoryItemList: List<RepositoryItemUiModel>,
+  onSeeMoreClick: () -> Unit,
 ) {
-    LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-        items(repositoryItemList) { repository ->
-            when (repository) {
-                is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
-                SeeMoreRepositoryItemUiModel -> MoreItem(onSeeMoreClick)
-            }
-        }
+  LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
+    items(repositoryItemList) { repository ->
+      when (repository) {
+        is SimpleRepositoryItemUiModel -> RepositoryItem(repository)
+        SeeMoreRepositoryItemUiModel -> MoreItem(onSeeMoreClick)
+      }
     }
+  }
 }
 
 @Composable
 private fun MoreItem(onClick: () -> Unit) {
-    ListItem(
-        headlineContent = {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.see_more),
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.End
-            )
-        },
-        modifier = Modifier.clickable(onClick = onClick)
-    )
+  ListItem(
+    headlineContent = {
+      Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = stringResource(R.string.see_more),
+        style = MaterialTheme.typography.labelLarge,
+        textAlign = TextAlign.End,
+      )
+    },
+    modifier = Modifier.clickable(onClick = onClick),
+  )
 }
 
 
@@ -146,29 +149,30 @@ private fun MoreItem(onClick: () -> Unit) {
 @Preview
 @Composable
 private fun LoadedViewerInfoLayoutPreview() {
-    ViewerInfoLayoutContent(
-        Loaded(
-            "JohnDoe42", "John Doe", "john.doe@example.com", listOf(
-                SimpleRepositoryItemUiModel(
-                    "0",
-                    "The first repository",
-                    "This repository is very interesting!",
-                    "4"
-                ),
-                SimpleRepositoryItemUiModel(
-                    "1",
-                    "The second repository",
-                    "I will not buy this record, it is scratched",
-                    "1"
-                ),
-                SeeMoreRepositoryItemUiModel,
-            )
-        )
-    ) {}
+  ViewerInfoLayoutContent(
+    Loaded(
+      "JohnDoe42", "John Doe", "john.doe@example.com",
+      listOf(
+        SimpleRepositoryItemUiModel(
+          "0",
+          "The first repository",
+          "This repository is very interesting!",
+          "4",
+        ),
+        SimpleRepositoryItemUiModel(
+          "1",
+          "The second repository",
+          "I will not buy this record, it is scratched",
+          "1",
+        ),
+        SeeMoreRepositoryItemUiModel,
+      ),
+    ),
+  ) {}
 }
 
 @Preview
 @Composable
 private fun ErrorViewerInfoLayoutPreview() {
-    ViewerInfoLayoutContent(Error) {}
+  ViewerInfoLayoutContent(Error) {}
 }

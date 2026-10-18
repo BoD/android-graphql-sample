@@ -24,52 +24,52 @@ import com.example.graphqlsample.R
 
 @Composable
 fun MainLayout(
-    onMenuSearchClick: () -> Unit,
-    onMenuMiscClick: () -> Unit,
-    content: @Composable () -> Unit
+  onMenuSearchClick: () -> Unit,
+  onMenuMiscClick: () -> Unit,
+  content: @Composable () -> Unit,
 ) {
-    MaterialTheme {
-        Scaffold(
-            topBar = {
-                @OptIn(ExperimentalMaterial3Api::class)
-                TopAppBar(
-                    title = { Text(stringResource(R.string.app_name)) },
-                    actions = {
-                        var menuExpanded by remember { mutableStateOf(false) }
-                        IconButton(onClick = { menuExpanded = true }) {
-                            Icon(Icons.Default.MoreVert, null)
-                        }
+  MaterialTheme {
+    Scaffold(
+      topBar = {
+        @OptIn(ExperimentalMaterial3Api::class)
+        TopAppBar(
+          title = { Text(stringResource(R.string.app_name)) },
+          actions = {
+            var menuExpanded by remember { mutableStateOf(false) }
+            IconButton(onClick = { menuExpanded = true }) {
+              Icon(Icons.Default.MoreVert, null)
+            }
 
-                        DropdownMenu(
-                            expanded = menuExpanded,
-                            onDismissRequest = { menuExpanded = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    menuExpanded = false
-                                    onMenuSearchClick()
-                                },
-                                text = {
-                                    Text(stringResource(R.string.main_menu_search))
-                                }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    menuExpanded = false
-                                    onMenuMiscClick()
-                                },
-                                text = {
-                                    Text(stringResource(R.string.main_menu_misc))
-                                }
-                            )
-                        }
-                    }
-                )
+            DropdownMenu(
+              expanded = menuExpanded,
+              onDismissRequest = { menuExpanded = false },
+            ) {
+              DropdownMenuItem(
+                onClick = {
+                  menuExpanded = false
+                  onMenuSearchClick()
+                },
+                text = {
+                  Text(stringResource(R.string.main_menu_search))
+                },
+              )
+              DropdownMenuItem(
+                onClick = {
+                  menuExpanded = false
+                  onMenuMiscClick()
+                },
+                text = {
+                  Text(stringResource(R.string.main_menu_misc))
+                },
+              )
             }
-        ) { paddingValues ->
-            Box(Modifier.padding(paddingValues)) {
-                content()
-            }
-        }
+          },
+        )
+      },
+    ) { paddingValues ->
+      Box(Modifier.padding(paddingValues)) {
+        content()
+      }
     }
+  }
 }

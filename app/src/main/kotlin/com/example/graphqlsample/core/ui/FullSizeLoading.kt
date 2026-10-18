@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun FullScreenLoading() {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
-        CircularProgressIndicator()
-    }
+  Box(Modifier.fillMaxSize(), Alignment.Center) {
+    CircularProgressIndicator()
+  }
 }
