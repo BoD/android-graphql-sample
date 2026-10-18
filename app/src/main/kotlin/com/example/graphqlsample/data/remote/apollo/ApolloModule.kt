@@ -1,4 +1,4 @@
-package com.example.graphqlsample.api.apollo
+package com.example.graphqlsample.data.remote.apollo
 
 import android.content.Context
 import com.apollographql.apollo.ApolloClient

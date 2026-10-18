@@ -87,6 +87,11 @@ dependencies {
   // Apollo
   implementation(libs.apollo.runtime)
 
+  // Room
+  implementation(libs.room.runtime)
+  implementation(libs.room.paging)
+  ksp(libs.room.compiler)
+
   // Timber
   implementation(libs.timber)
 
