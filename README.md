@@ -21,8 +21,6 @@ Or using Apollo's gradle task:
 ./gradlew downloadGithubApolloSchemaFromIntrospection
 ```
 
-(replace `<your token>` by the token you got from Github)
-
 ## Architecture of the project
 
 There is a single activity which is a host for 4 Compose layouts:

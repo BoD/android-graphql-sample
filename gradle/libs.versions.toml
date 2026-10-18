@@ -1,31 +1,29 @@
 [versions]
-benManes-versions = "0.61.0"
-kotlin = "2.4.20"
-ksp = "2.3.11"
+kotlin = "2.4.21"
+ksp = "2.3.12"
 hilt = "2.60.1"
-agp = "9.4.0"
+agp = "9.4.1"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-espresso = "3.7.0"
 kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"
 androidx-appcompat = "1.8.0"
-androidx-core = "1.19.0"
+androidx-core = "1.19.1"
 androidx-lifecycle-extensions = "2.2.0"
-androidx-lifecycle = "2.5.1"
-androidx-paging = "3.5.1"
+androidx-lifecycle = "2.11.0"
+androidx-paging = "3.5.3"
 androidx-activity = "1.13.0"
 # See https://developer.android.com/jetpack/compose/bom/bom-mapping
-composeBom = "2026.08.00"
-androidx-lifecycle-viewmodel-compose = "2.8.1"
+composeBom = "2026.09.00"
+androidx-lifecycle-viewmodel-compose = "2.11.0"
 androidx-lifecycle-viewmodel-navigation3 = "2.11.0"
-androidx-navigation3 = "1.1.7"
-apollo = "5.1.0"
+androidx-navigation3 = "1.2.0"
+apollo = "5.2.0"
 jakewharton-timber = "5.0.1"
 androidx-hilt-navigation-compose = "1.4.0"
 junit-junit = "4.13.2"
 
 [plugins]
-benManes-versions = { id = "io.github.ben-manes.versions", version.ref = "benManes-versions" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -10,3 +10,4 @@ captures
 build.properties
 .graphqlconfig
 .kotlin
+versions.properties
