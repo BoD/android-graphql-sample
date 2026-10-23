@@ -9,15 +9,12 @@ kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"
 androidx-appcompat = "1.8.0"
 androidx-core = "1.19.1"
-androidx-lifecycle-extensions = "2.2.0"
 androidx-lifecycle = "2.11.0"
 androidx-paging = "3.5.3"
 androidx-activity = "1.13.0"
+androidx-navigation3 = "1.2.0"
 # See https://developer.android.com/jetpack/compose/bom/bom-mapping
 composeBom = "2026.09.00"
-androidx-lifecycle-viewmodel-compose = "2.11.0"
-androidx-lifecycle-viewmodel-navigation3 = "2.11.0"
-androidx-navigation3 = "1.2.0"
 apollo = "5.2.0"
 jakewharton-timber = "5.0.1"
 androidx-hilt-navigation-compose = "1.4.0"
@@ -40,8 +37,6 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "androidx-lifecycle-extensions" }
-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidx-paging" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 
@@ -51,8 +46,8 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 
-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-viewmodel-compose" }
-androidx-lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle-viewmodel-navigation3" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle" }
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "androidx-navigation3" }
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "androidx-navigation3" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

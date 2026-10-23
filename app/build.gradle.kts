@@ -63,8 +63,6 @@ dependencies {
   // AndroidX
   implementation(libs.appcompat)
   implementation(libs.core.ktx)
-  implementation(libs.lifecycle.extensions)
-  implementation(libs.lifecycle.viewmodel.ktx)
 
   // Compose
   implementation(libs.activity.compose)
@@ -74,7 +72,7 @@ dependencies {
   implementation(libs.androidx.compose.animation)
   implementation(libs.androidx.compose.ui.tooling)
 
-  implementation(libs.lifecycle.viewmodel.compose)
+  implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.paging.compose)
 
   // Navigation

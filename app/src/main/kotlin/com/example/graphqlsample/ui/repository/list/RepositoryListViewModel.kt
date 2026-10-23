@@ -10,7 +10,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.apollographql.apollo.ApolloClient
-import com.example.graphqlsample.R
 import com.example.graphqlsample.data.RepositoryRemoteMediator
 import com.example.graphqlsample.data.local.AppDatabase
 import com.example.graphqlsample.ui.navigation.Destination
@@ -49,8 +48,7 @@ class RepositoryListViewModel @AssistedInject constructor(
           SimpleRepositoryItemUiModel(
             id = item.id,
             name = item.name,
-            description = item.description
-              ?: application.getString(R.string.repository_noDescription),
+            description = item.description,
             stars = item.stars.toString(),
           )
         }
